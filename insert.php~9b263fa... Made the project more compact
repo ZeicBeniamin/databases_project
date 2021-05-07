@@ -8,9 +8,12 @@
 <body>
 <?php
 
-require_once "../init.php";
+require_once "init.php";
 
-$table_name = "vehicles";
+session_start();
+$table_name = $_SESSION['table'];
+$webp_title = ucfirst($table_name) . " table";
+echo $webp_title . "<br>";
 
 // Suppose inserted data is false - this prevents a database check when the
 // page is first run
@@ -28,7 +31,7 @@ if ($isDataValid) {
 }
 // Avoid showing warnings when user first enters page
 elseif ($caller_path == $current_script_path) {
-    echo "No empty data fields allowed";
+    echo "<p class='error'>" . "No empty data fields allowed" . "</p>";
 }
 
 function insertData($q_data_insert) {
@@ -43,8 +46,8 @@ function insertData($q_data_insert) {
         echo mysqli_error($connection);
     } else {
         echo "<br> Insertion completed successfully.";
-        echo "<br> Insert statement:";
-        echo "<br>" . $q_data_insert;
+        echo "<p class='sql_code'> Insert statement:";
+        echo "<br>" . $q_data_insert . "</p>";
     }
 
 }
@@ -306,5 +309,15 @@ function test_input($data)
         border-style: solid;
         border-width: 1px;
         border-collapse: collapse;
+    }
+
+    .sql_code {
+        font-family: "Courier New", monspace;
+        font-size: 0.55rem;
+        font-size: 0.6rem;
+    }
+
+    .error {
+        color: red;
     }
 </style>

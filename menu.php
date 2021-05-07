@@ -73,7 +73,10 @@ if (isset($_POST['drivers/delete'])) {
 
 
 <div class="vertical-menu">
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> 9b263fa... Made the project more compact
     <form target="middle_frame" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
         <a href="#" style="background-color: #CE0505FF;">Tests</a>
         <button name="select" target="middle_frame"> Select</button>
@@ -111,6 +114,7 @@ if (isset($_POST['drivers/delete'])) {
         <button name="vehicles/update" target="middle_frame"> Update</button>
         <button name="vehicles/delete" target="middle_frame"> Delete</button>
     </form>
+<<<<<<< HEAD
 =======
     <a href="#" class="active">Drivers</a>
     <a href="drivers/select.php" target="middle_frame" > Select</a>
@@ -142,6 +146,8 @@ if (isset($_POST['drivers/delete'])) {
     <a href="vehicles/update_s.php" target="middle_frame" > Update</a>
     <a href="vehicles/delete.php" target="middle_frame" > Delete</a>
 >>>>>>> Stashed changes
+=======
+>>>>>>> 9b263fa... Made the project more compact
 </div>
 
 <style>

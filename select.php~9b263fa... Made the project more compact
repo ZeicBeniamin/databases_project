@@ -6,13 +6,17 @@
 </head>
 
 <body>
-<!--Trecut de body<br>-->
 <?php
-require_once "../init.php";
+
+require_once "init.php";
 
 //echo "Trecut de init.php <br>";
 // Define the required data
-$table_name = "schedule";
+session_start();
+$table_name = $_SESSION['table'];
+$webp_title = ucfirst($table_name) . " table";
+echo $webp_title . "<br>";
+
 ?>
 
 <table border="1px">
@@ -72,3 +76,11 @@ $table_name = "schedule";
 
 </body>
 </html>
+
+<style>
+    .sql_code {
+        font-family: "Courier New", monspace;
+        font-size: 0.55rem;
+        font-size: 0.6rem;
+    }
+</style>
