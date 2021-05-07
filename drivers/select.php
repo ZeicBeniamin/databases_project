@@ -14,6 +14,7 @@ require_once "../init.php";
 // Define the required data
 $table_name = "drivers";
 $webp_title = "Drivers table";
+
 ?>
 
 <table border="1px">

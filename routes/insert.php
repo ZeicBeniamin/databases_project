@@ -11,7 +11,7 @@
 require_once "../init.php";
 
 $table_name = "routes";
-$webp_title = "Drivers table";
+
 
 // Suppose inserted data is false - this prevents a database check when the
 // page is first run
@@ -184,103 +184,94 @@ function test_input($data)
 ?>
 
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" >
-    <table>
+<table>
 
-        <colgroup>
+    <colgroup>
 
-            <col span="1" style="width: 20%">
-            <col span="1" style="width: 20%">
-            <col span="1" style="width: 20%">
-            <col span="1" style="width: 20%">
+        <col span="1" style="width: 20%">
+        <col span="1" style="width: 20%">
+        <col span="1" style="width: 20%">
+        <col span="1" style="width: 20%">
 
-        </colgroup>
+    </colgroup>
 
-        <tr>
+    <tr>
 
-            <?php
-            // Query columns of the table
-            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-            // 'r' respectively
-            $q_table_columns = sprintf(
-                "SELECT *
+        <?php
+        // Query columns of the table
+        // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
+        // 'r' respectively
+        $q_table_columns = sprintf(
+            "SELECT *
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_NAME = '%s'", $table_name);
-            $r_table_columns = mysqli_query($connection, $q_table_columns)
-            or die("Query unsuccessful");
+        $r_table_columns = mysqli_query($connection, $q_table_columns)
+        or die("Query unsuccessful");
 
-            // Generate the table header using php
-            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-                echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-                echo("<br>");
+        // Generate the table header using php
+        while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
+            echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
+            echo("<br>");
+        }
+
+        ?>
+
+    </tr>
+
+    <tr>
+
+        <?php
+        // Query columns of the table
+        // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
+        // 'r' respectively
+        $q_table_columns = sprintf(
+            "SELECT *
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = '%s'", $table_name);
+        $r_table_columns = mysqli_query($connection, $q_table_columns)
+        or die("Query unsuccessful");
+
+        // Generate the table header using php
+        while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
+            switch ($r['DATA_TYPE']) {
+                case 'int':
+                    $input_type = 'number';
+                    $width = '20px';
+                    break;
+                case 'varchar':
+                    $input_type = 'text';
+                    $width = '40px';
+                    break;
+                case 'date':
+                    $input_type = 'date';
+                    $width = '40px';
+                    break;
             }
 
-            ?>
-
-        </tr>
-
-        <tr>
-
-            <?php
-            // Query columns of the table
-            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-            // 'r' respectively
-            $q_table_columns = sprintf(
-                "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-            $r_table_columns = mysqli_query($connection, $q_table_columns)
-            or die("Query unsuccessful");
-
-            $q_column_type = sprintf(
-                "SELECT COLUMN_NAME, DATA_TYPE
-            FROM information_schema.COLUMNS
-            WHERE TABLE_NAME='%s'",
-                $table_name
-            );
-            $r_column_type = mysqli_query($connection, $q_column_type)
-            or die("Query unsuccessful");
-
-            // Generate the table header using php
-            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-                switch ($r['DATA_TYPE']) {
-                    case 'int':
-                        $input_type = 'number';
-                        $width = '20px';
-                        break;
-                    case 'varchar':
-                        $input_type = 'text';
-                        $width = '40px';
-                        break;
-                    case 'date':
-                        $input_type = 'date';
-                        $width = '40px';
-                        break;
-                }
-
-                if ($r['COLUMN_NAME'] == 'id') {
-                    echo(
+            if ($r['COLUMN_NAME'] == 'id') {
+                echo(
                     "<td><input name='id' type='text' value='Autoincrement' readonly></input></td>"
-                    );
-                } else {
-                    echo(sprintf(
-                        "<td><input name='%s' type='%s' id='$s'></input></td>",
-                        $r['COLUMN_NAME'],
-                        $input_type,
-                        $r['COLUMN_NAME']
-                    ));
-                }
-
-
-
+                );
+            } else {
+                echo(sprintf(
+                    "<td><input name='%s' type='%s' id='$s'></input></td>",
+                    $r['COLUMN_NAME'],
+                    $input_type,
+                    $r['COLUMN_NAME']
+                ));
             }
 
-            ?>
 
-        </tr>
 
-    </table>
+        }
 
-    <button type="submit">Insert</button>
+        ?>
+
+    </tr>
+
+</table>
+
+<button type="submit">Insert</button>
 </form>
 
 

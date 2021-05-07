@@ -2,12 +2,8 @@
 <body style="padding:0px">
 
 <iframe name="left_frame" src="menu.php" id="left_frame"></iframe>
-<iframe name="middle_frame" src="main_view.php" class="" id="middle_frame"></iframe>
+<iframe name="middle_frame" class="" id="middle_frame"></iframe>
 <iframe name="right_frame" src="username.php" id="right_frame"></iframe>
-
-<!--<iframe name="left_frame" src="https://www.w3schools.com/html/default.asp" id="left_frame"></iframe>-->
-<!--<iframe name="middle_frame" src="https://www.w3schools.com/" class="" id="middle_frame"></iframe>-->
-<!--<iframe name="right_frame" src="https://www.w3schools.com/" id="right_frame"></iframe>-->
 
 </body>
 </html>

@@ -9,25 +9,6 @@
 
 <?php
 
-// Suppose inserted data is false - this prevents a database check when the
-// page is first run
-$isDataValid = false;
-$isValidUser = false;
-$mainPage = "main.php";
-
-// define error variables and set to empty values
-$nameErr = $passwordErr = "";
-$password = $username = "";
-
-check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
-$isValidUser = search_user_in_DB($isDataValid, $username, $password);
-
-if ($isValidUser) {
-    session_start();
-    $_SESSION['username'] = $username;
-    header("Location: " . $mainPage);
-}
-
 function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password) {
     // Check the username and password to meet certain criteria
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -96,6 +77,25 @@ function test_input($data)
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
+}
+
+// Suppose inserted data is false - this prevents a database check when the
+// page is first run
+$isDataValid = false;
+$isValidUser = false;
+$mainPage = "main.php";
+
+// define error variables and set to empty values
+$nameErr = $passwordErr = "";
+$password = $username = "";
+
+check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
+$isValidUser = search_user_in_DB($isDataValid, $username, $password);
+
+if ($isValidUser) {
+    session_start();
+    $_SESSION['username'] = $username;
+    header("Location: " . $mainPage);
 }
 
 ?>

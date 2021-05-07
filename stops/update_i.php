@@ -11,9 +11,6 @@ require "../init.php";
 $table_name = $_POST['table_name'];
 $id = $_POST['id'];
 
-//echo "<br>" . $table_name;
-//echo "<br>" . $id;
-
 
 // Suppose inserted data is false - this prevents a database check when the
 // page is first run
