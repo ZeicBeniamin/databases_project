@@ -12,15 +12,11 @@ require_once "init.php";
 
 //echo "Trecut de init.php <br>";
 // Define the required data
-<<<<<<< Updated upstream:select.php
+
 session_start();
 $table_name = $_SESSION['table'];
 $webp_title = ucfirst($table_name) . " table";
 echo $webp_title . "<br>";
-=======
-$table_name = "drivers";
-$webp_title = "Drivers table";
->>>>>>> Stashed changes:drivers/select.php
 
 ?>
 
