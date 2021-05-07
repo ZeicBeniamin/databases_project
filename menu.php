@@ -73,10 +73,6 @@ if (isset($_POST['drivers/delete'])) {
 
 
 <div class="vertical-menu">
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
->>>>>>> 9b263fa... Made the project more compact
     <form target="middle_frame" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
         <a href="#" style="background-color: #CE0505FF;">Tests</a>
         <button name="select" target="middle_frame"> Select</button>
@@ -114,40 +110,7 @@ if (isset($_POST['drivers/delete'])) {
         <button name="vehicles/update" target="middle_frame"> Update</button>
         <button name="vehicles/delete" target="middle_frame"> Delete</button>
     </form>
-<<<<<<< HEAD
-=======
-    <a href="#" class="active">Drivers</a>
-    <a href="drivers/select.php" target="middle_frame" > Select</a>
-    <a href="drivers/insert.php" target="middle_frame" > Insert</a>
-    <a href="drivers/update_s.php" target="middle_frame" > Update</a>
-    <a href="drivers/delete.php" target="middle_frame" > Delete</a>
 
-    <a href="#" class="active">Schedule</a>
-    <a href="schedule/select.php" target="middle_frame" > Select</a>
-    <a href="schedule/insert.php" target="middle_frame" > Insert</a>
-    <a href="schedule/update_s.php" target="middle_frame" > Update</a>
-    <a href="schedule/delete.php" target="middle_frame" > Delete</a>
-
-    <a href="#" class="active">Routes</a>
-    <a href="routes/select.php" target="middle_frame" > Select</a>
-    <a href="routes/insert.php" target="middle_frame" > Insert</a>
-    <a href="routes/update_s.php" target="middle_frame" > Update</a>
-    <a href="routes/delete.php" target="middle_frame" > Delete</a>
-
-    <a href="#" class="active">Stops</a>
-    <a href="stops/select.php" target="middle_frame" > Select</a>
-    <a href="stops/insert.php" target="middle_frame" > Insert</a>
-    <a href="stops/update_s.php" target="middle_frame" > Update</a>
-    <a href="stops/delete.php" target="middle_frame" > Delete</a>
-
-    <a href="#" class="active">Vehicles</a>
-    <a href="vehicles/select.php" target="middle_frame" > Select</a>
-    <a href="vehicles/insert.php" target="middle_frame" > Insert</a>
-    <a href="vehicles/update_s.php" target="middle_frame" > Update</a>
-    <a href="vehicles/delete.php" target="middle_frame" > Delete</a>
->>>>>>> Stashed changes
-=======
->>>>>>> 9b263fa... Made the project more compact
 </div>
 
 <style>
