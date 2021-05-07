@@ -6,15 +6,12 @@
 </head>
 <body>
 <?php
-require "../init.php";
+require "init.php";
 
 $table_name = $_POST['table_name'];
 $id = $_POST['id'];
-
-//echo "<br>" . $table_name;
-//echo "<br>" . $id;
-
-
+$webp_title = ucfirst($table_name) . " table";
+echo $webp_title . "<br>";
 // Suppose inserted data is false - this prevents a database check when the
 // page is first run
 $isDataValid = false;
@@ -31,7 +28,7 @@ if ($isDataValid) {
     insertData($q_data_insert);
 } // Avoid showing warnings when user first enters page
 elseif ($caller_path == $current_script_path) {
-    echo "No empty data fields allowed";
+    echo "<p class='error'>" . "Invalid data - some fields might be empty" . "</p>";
 }
 
 function insertData($q_data_insert)
@@ -48,8 +45,8 @@ function insertData($q_data_insert)
 
     } else {
         echo "<br> Update completed successfully.";
-        echo "<br> Update statement:";
-        echo "<br>" . $q_data_insert;
+        echo "<p class='sql_code'> Update statement:";
+        echo "<br>" . $q_data_insert . "</p>";
     }
 
 }
@@ -298,7 +295,7 @@ function test_input($data)
 
     </table>
 
-    <button type="submit">Insert</button>
+    <button type="submit">Update</button>
 </form>
 
 
@@ -336,5 +333,15 @@ function test_input($data)
         border-style: solid;
         border-width: 1px;
         border-collapse: collapse;
+    }
+
+    .sql_code {
+        font-family: "Courier New", monspace;
+        font-size: 0.55rem;
+        font-size: 0.6rem;
+    }
+
+    .error {
+        color: red;
     }
 </style>

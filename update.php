@@ -8,11 +8,12 @@
 <body>
 <!--Trecut de body<br>-->
 <?php
-require_once "../init.php";
+require_once "init.php";
 
-//echo "Trecut de init.php <br>";
-// Define the required data
-$table_name = "vehicles";
+session_start();
+$table_name = $_SESSION['table'];
+$webp_title = ucfirst($table_name) . " table";
+echo $webp_title . "<br>";
 ?>
 <form id="update_form" method="POST" action="update_i.php">
     <!-- Pass the table name as an argument to the PHP script. -->
@@ -32,8 +33,8 @@ $table_name = "vehicles";
 
             <?php
             // Query columns of the table
-            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-            // 'r' respectively
+            // As a convention, I tried to prepend the names of the variables that held a query string or a db result
+            // with 'q' and 'r' respectively
             $q_table_columns = sprintf(
                 "SELECT *
                 FROM INFORMATION_SCHEMA.COLUMNS
@@ -41,6 +42,7 @@ $table_name = "vehicles";
             $r_table_columns = mysqli_query($connection, $q_table_columns)
             or die("Query unsuccessful");
 
+            echo(sprintf("<th><b>%s</b></th>", "Select"));
             // Generate the table header using php
             while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
                 echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
@@ -71,7 +73,7 @@ $table_name = "vehicles";
         ?>
     </table>
 
-    <button type="button" onclick="checkAndSubmit()">Send</button>
+    <button type="button" onclick="checkAndSubmit()">Modify</button>
 </form>
 
 </body>

@@ -1,36 +1,122 @@
+<?php
+session_start();
+if (isset($_POST['drivers/select'])) {
+    $_SESSION['table'] = 'drivers';
+    header("Location: " . "select.php");
+} elseif (isset($_POST['schedule/select'])) {
+    $_SESSION['table'] = 'schedule';
+    header("Location: " . "select.php");
+} elseif (isset($_POST['routes/select'])) {
+    $_SESSION['table'] = 'routes';
+    header("Location: " . "select.php");
+} elseif (isset($_POST['stops/select'])) {
+    $_SESSION['table'] = 'stops';
+    header("Location: " . "select.php");
+} elseif (isset($_POST['vehicles/select'])) {
+    $_SESSION['table'] = 'vehicles';
+    header("Location: " . "select.php");
+}
+
+if (isset($_POST['drivers/insert'])) {
+    $_SESSION['table'] = 'drivers';
+    header("Location: " . "insert.php");
+} elseif (isset($_POST['schedule/insert'])) {
+    $_SESSION['table'] = 'schedule';
+    header("Location: " . "insert.php");
+} elseif (isset($_POST['routes/insert'])) {
+    $_SESSION['table'] = 'routes';
+    header("Location: " . "insert.php");
+} elseif (isset($_POST['stops/insert'])) {
+    $_SESSION['table'] = 'stops';
+    header("Location: " . "insert.php");
+} elseif (isset($_POST['vehicles/insert'])) {
+    $_SESSION['table'] = 'vehicles';
+    header("Location: " . "insert.php");
+}
+
+if (isset($_POST['drivers/update'])) {
+    $_SESSION['table'] = 'drivers';
+    header("Location: " . "update.php");
+} elseif (isset($_POST['schedule/update'])) {
+    $_SESSION['table'] = 'schedule';
+    header("Location: " . "update.php");
+} elseif (isset($_POST['routes/update'])) {
+    $_SESSION['table'] = 'routes';
+    header("Location: " . "update.php");
+} elseif (isset($_POST['stops/update'])) {
+    $_SESSION['table'] = 'stops';
+    header("Location: " . "update.php");
+} elseif (isset($_POST['vehicles/update'])) {
+    $_SESSION['table'] = 'vehicles';
+    header("Location: " . "update.php");
+}
+
+$tables = array(['drivers', 'schedule', 'routes', 'stops', 'vehicles']);
+
+if (isset($_POST['drivers/delete'])) {
+    $_SESSION['table'] = 'drivers';
+    header("Location: " . "delete.php");
+} elseif (isset($_POST['schedule/delete'])) {
+    $_SESSION['table'] = 'schedule';
+    header("Location: " . "delete.php");
+} elseif (isset($_POST['routes/delete'])) {
+    $_SESSION['table'] = 'routes';
+    header("Location: " . "delete.php");
+} elseif (isset($_POST['stops/delete'])) {
+    $_SESSION['table'] = 'stops';
+    header("Location: " . "delete.php");
+} elseif (isset($_POST['vehicles/delete'])) {
+    $_SESSION['table'] = 'vehicles';
+    header("Location: " . "delete.php");
+}
+?>
+
+
 <div class="vertical-menu">
-    <a href="#" class="active">Drivers</a>
-    <a href="drivers/select.php" target="middle_frame" > Select</a>
-    <a href="drivers/insert.php" target="middle_frame" > Insert</a>
-    <a href="drivers/update_s.php" target="middle_frame" > Update</a>
-    <a href="drivers/delete.php" target="middle_frame" > Delete</a>
+    <form target="middle_frame" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <a href="#" style="background-color: #CE0505FF;">Tests</a>
+        <button name="select" target="middle_frame"> Select</button>
+        <button name="insert" target="middle_frame"> Insert</button>
+        <button name="update" target="middle_frame"> Update</button>
+        <button name="delete" target="middle_frame"> Delete</button>
 
-    <a href="#" class="active">Schedule</a>
-    <a href="schedule/select.php" target="middle_frame" > Select</a>
-    <a href="schedule/insert.php" target="middle_frame" > Insert</a>
-    <a href="schedule/update_s.php" target="middle_frame" > Update</a>
-    <a href="schedule/delete.php" target="middle_frame" > Delete</a>
+        <a name="#" class="active">Drivers</a>
+        <button name="drivers/select" target="middle_frame"> Select</button>
+        <button name="drivers/insert" target="middle_frame"> Insert</button>
+        <button name="drivers/update" target="middle_frame"> Update</button>
+        <button name="drivers/delete" target="middle_frame"> Delete</button>
 
-    <a href="#" class="active">Routes</a>
-    <a href="routes/select.php" target="middle_frame" > Select</a>
-    <a href="routes/insert.php" target="middle_frame" > Insert</a>
-    <a href="routes/update_s.php" target="middle_frame" > Update</a>
-    <a href="routes/delete.php" target="middle_frame" > Delete</a>
+        <a name="#" class="active">Schedule</a>
+        <button name="schedule/select" target="middle_frame"> Select</button>
+        <button name="schedule/insert" target="middle_frame"> Insert</button>
+        <button name="schedule/update" target="middle_frame"> Update</button>
+        <button name="schedule/delete" target="middle_frame"> Delete</button>
 
-    <a href="#" class="active">Stops</a>
-    <a href="stops/select.php" target="middle_frame" > Select</a>
-    <a href="stops/insert.php" target="middle_frame" > Insert</a>
-    <a href="stops/update_s.php" target="middle_frame" > Update</a>
-    <a href="stops/delete.php" target="middle_frame" > Delete</a>
+        <a name="#" class="active">Routes</a>
+        <button name="routes/select" target="middle_frame"> Select</button>
+        <button name="routes/insert" target="middle_frame"> Insert</button>
+        <button name="routes/update" target="middle_frame"> Update</button>
+        <button name="routes/delete" target="middle_frame"> Delete</button>
 
-    <a href="#" class="active">Vehicles</a>
-    <a href="vehicles/select.php" target="middle_frame" > Select</a>
-    <a href="vehicles/insert.php" target="middle_frame" > Insert</a>
-    <a href="vehicles/update_s.php" target="middle_frame" > Update</a>
-    <a href="vehicles/delete.php" target="middle_frame" > Delete</a>
+        <a name="#" class="active">Stops</a>
+        <button name="stops/select" target="middle_frame"> Select</button>
+        <button name="stops/insert" target="middle_frame"> Insert</button>
+        <button name="stops/update" target="middle_frame"> Update</button>
+        <button name="stops/delete" target="middle_frame"> Delete</button>
+
+        <a name="#" class="active">Vehicles</a>
+        <button name="vehicles/select" target="middle_frame"> Select</button>
+        <button name="vehicles/insert" target="middle_frame"> Insert</button>
+        <button name="vehicles/update" target="middle_frame"> Update</button>
+        <button name="vehicles/delete" target="middle_frame"> Delete</button>
+    </form>
 </div>
 
 <style>
+    body {
+        font-family: "Courier New", monspace;
+    }
+
     /* Styling code copied from w3schools.com */
     .vertical-menu {
         /*width: 180px; !* Set a width if you like *!*/
@@ -49,12 +135,27 @@
 
     }
 
-    .vertical-menu a:hover {
-        background-color: #ccc; /* Dark grey background on mouse-over */
+    .vertical-menu a.active {
+        background-color: #ce5f05; /* Add an orange color to the "active/current" link */
+        color: white;
+        font-weight: bold;
     }
 
-    .vertical-menu a.active {
-        background-color: #ce5f05; /* Add a green color to the "active/current" link */
-        color: white;
+    button {
+        display: block;
+        border-style: none;
+        height: 1.2rem;
+        width: 100%;
+        text-align: left;
+    }
+
+    button {
+        transition-duration: 0.2s;
+        font-family: "Courier New", monspace;
+    }
+
+    button:hover {
+        background-color: darkgoldenrod;
+
     }
 </style>

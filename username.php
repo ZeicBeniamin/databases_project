@@ -6,7 +6,7 @@
 <body>
 
 <?php session_start(); ?>
-Welcome <?php echo $_POST["name"]; ?><br>
-Your username is: <?php echo $_SESSION["username"]; ?>
+Welcome <?php echo $_SESSION["username"]; ?><br>
+
 </body>
 </html>
