@@ -21,13 +21,13 @@ $isDataValid = false;
 
 $r_column_names = query_column_names();
 //echo "Query column names";
-$q_data_insert = build_insertion_string($r_column_names);
+$q_data_insert = build_deletion_string($r_column_names);
 
 $caller_path = preg_replace('#^https?://#', '', $_SERVER['HTTP_REFERER']);
 $current_script_path = sprintf("%s%s", $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF']);
 
 if ($isDataValid) {
-    insertData($q_data_insert);
+    deleteData($q_data_insert);
 }
 // Avoid showing warnings when user first enters page
 elseif ($caller_path == $current_script_path) {
@@ -105,14 +105,6 @@ function query_column_names() {
     return $r_table_columns;
 }
 
-
-//check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
-//$isValidUser = search_user_in_DB($isDataValid, $username, $password);
-
-
-
-
-
 function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password) {
     // Check the username and password to meet certain criteria
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -147,32 +139,32 @@ function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &
     }
 }
 
-function search_user_in_DB($isDataValid, $username, $password) {
-    $isValidUser = false;
-    // If data is valid, check it against users in the database
-    if ($isDataValid) {
-        require "init.php";
-
-        // Query the database for the user and password entered in the login form
-        $query_string = sprintf(
-            "SELECT * FROM `accounts` WHERE user='%s' AND password='%s'",
-            $username,
-            $password
-        );
-
-        $result = mysqli_query($connection, $query_string)
-        or die("<br>Querry fail");
-
-        // If the result contains some data about
-        if (mysqli_num_rows($result)) {
-            $isValidUser = true;
-        } else {
-            $isValidUser = false;
-        }
-    }
-
-    return $isValidUser;
-}
+//function search_user_in_DB($isDataValid, $username, $password) {
+//    $isValidUser = false;
+//    // If data is valid, check it against users in the database
+//    if ($isDataValid) {
+//        require "init.php";
+//
+//        // Query the database for the user and password entered in the login form
+//        $query_string = sprintf(
+//            "SELECT * FROM `accounts` WHERE user='%s' AND password='%s'",
+//            $username,
+//            $password
+//        );
+//
+//        $result = mysqli_query($connection, $query_string)
+//        or die("<br>Querry fail");
+//
+//        // If the result contains some data about
+//        if (mysqli_num_rows($result)) {
+//            $isValidUser = true;
+//        } else {
+//            $isValidUser = false;
+//        }
+//    }
+//
+//    return $isValidUser;
+//}
 
 // Test data in order to avoid attacks
 function test_input($data)

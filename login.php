@@ -90,7 +90,11 @@ $nameErr = $passwordErr = "";
 $password = $username = "";
 
 check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
+<<<<<<< Updated upstream
+$isValidUser = add_user_in_DB($isDataValid, $username, $password);
+=======
 $isValidUser = search_user_in_DB($isDataValid, $username, $password);
+>>>>>>> Stashed changes
 
 if ($isValidUser) {
     session_start();

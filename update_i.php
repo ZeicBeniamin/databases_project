@@ -10,22 +10,34 @@ require "init.php";
 
 $table_name = $_POST['table_name'];
 $id = $_POST['id'];
+<<<<<<< Updated upstream:update_i.php
 $webp_title = ucfirst($table_name) . " table";
 echo $webp_title . "<br>";
+=======
+
+//echo "<br>" . $table_name;
+//echo "<br>" . $id;
+
+
+>>>>>>> Stashed changes:drivers/update_i.php
 // Suppose inserted data is false - this prevents a database check when the
 // page is first run
 $isDataValid = false;
 
 $r_column_names = query_column_names();
 //echo "Query column names";
+<<<<<<< Updated upstream:update_i.php
+$q_data_insert = build_deletion_string($r_column_names);
+=======
 $q_data_insert = build_insertion_string($r_column_names);
+>>>>>>> Stashed changes:drivers/update_i.php
 //echo "<br>Updating string" . $q_data_insert;
 
 $caller_path = preg_replace('#^https?://#', '', $_SERVER['HTTP_REFERER']);
 $current_script_path = sprintf("%s%s", $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF']);
 
 if ($isDataValid) {
-    insertData($q_data_insert);
+    deleteData($q_data_insert);
 } // Avoid showing warnings when user first enters page
 elseif ($caller_path == $current_script_path) {
     echo "<p class='error'>" . "Invalid data - some fields might be empty" . "</p>";
@@ -45,8 +57,13 @@ function insertData($q_data_insert)
 
     } else {
         echo "<br> Update completed successfully.";
+<<<<<<< Updated upstream:update_i.php
         echo "<p class='sql_code'> Update statement:";
         echo "<br>" . $q_data_insert . "</p>";
+=======
+        echo "<br> Update statement:";
+        echo "<br>" . $q_data_insert;
+>>>>>>> Stashed changes:drivers/update_i.php
     }
 
 }
@@ -82,9 +99,15 @@ function build_insertion_string(&$r_column_names)
         "UPDATE `%s`
                 SET %s
                 WHERE `%s`.`id` = %s",
+<<<<<<< Updated upstream:update_i.php
         $table_name,
         ltrim($keys, ','),
         $table_name,
+=======
+        $table_name,
+        ltrim($keys, ','),
+        $table_name,
+>>>>>>> Stashed changes:drivers/update_i.php
         $id
     );
 }

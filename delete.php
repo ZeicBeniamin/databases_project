@@ -14,8 +14,9 @@ session_start();
 $table_name = $_SESSION['table'];
 $webp_title = ucfirst($table_name) . " table";
 echo $webp_title . "<br>";
+echo "Delete";
 ?>
-<form id="update_form" method="POST" action="update_i.php">
+<form id="delete_form" method="POST" action="delete_d.php">
     <!-- Pass the table name as an argument to the PHP script. -->
     <input type="hidden" name="table_name" value="<?=$table_name;?>"/>
     <table border="1px">
@@ -83,7 +84,7 @@ echo $webp_title . "<br>";
     function checkAndSubmit() {
         let checked = [...document.getElementsByClassName('id_button')].some(c => c.checked);
         if (checked) {
-            document.getElementById("update_form").submit();
+            document.getElementById("delete_form").submit();
         } else if (!document.getElementById("warning")) {
             let textField = document.createElement("h6");
             // textField.setAttribute("text");
