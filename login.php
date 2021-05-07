@@ -56,17 +56,10 @@ function search_user_in_DB($isDataValid, $username, $password) {
             $password
         );
 
-        $result = mysqli_query($connection, $query_string);
-        //or die("<br>Querry fail - login");
-        if(mysqli_errno($connection)) {
-            echo "<br>Insertion failed<br>";
-            echo mysqli_error($connection);
-        } else {
-            echo "<br> Insertion completed successfully.";
-            echo "<p class='sql_code'> Insert statement:";
-            echo "<br>" . $q_data_insert . "</p>";
-        }
-        // If the result contains some data about
+        $result = mysqli_query($connection, $query_string)
+        or die("<br>Querry fail - login");
+
+        // If the result contains some data about the user
         if (mysqli_num_rows($result)) {
             $isValidUser = true;
         } else {

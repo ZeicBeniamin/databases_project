@@ -6,126 +6,20 @@
 </head>
 
 <body>
+
 <?php
 
-require_once "init.php";
-
-
-$table_name = 'accounts';
-$webp_title = ucfirst($table_name) . " table";
-echo $webp_title . "<br>";
-
-// Suppose inserted data is false - this prevents a database check when the
-// page is first run
-$isDataValid = false;
-
-$r_column_names = query_column_names();
-//echo "Query column names";
-$q_data_insert = build_insertion_string($r_column_names);
-
-$caller_path = preg_replace('#^https?://#', '', $_SERVER['HTTP_REFERER']);
-$current_script_path = sprintf("%s%s", $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF']);
-if (isset($_POST['signin'])) {
-    if ($isDataValid) {
-        insertData($q_data_insert);
-    } // Avoid showing warnings when user first enters page
-    elseif ($caller_path == $current_script_path) {
-        echo "<p class='error'>" . "No empty data fields allowed" . "</p>";
-    } else {
-        echo "Other errors";
-    }
-}
-
-function insertData($q_data_insert)
-{
-    global $connection;
-    try {
-        mysqli_query($connection, $q_data_insert);
-    } catch (Exception $exception) {
-    }
-    if (mysqli_errno($connection)) {
-        echo "<br>Insertion failed<br>";
-        echo mysqli_error($connection);
-    } else {
-        echo "<br> Insertion completed successfully.";
-        echo "<p class='sql_code'> Insert statement:";
-        echo "<br>" . $q_data_insert . "</p>";
-    }
-
-}
-
-function build_insertion_string(&$r_column_names)
-{
-    global $table_name;
-    global $isDataValid;
-    $isDataValid = true;
-
-    // 'id' is the first column in every table
-    $keys = "(`id`";
-    $values = "VALUES (NULL";
-
-//    echo "<br>Build insertion string - interior";
-
-    while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
-//        echo "<br>Build insertion string - iteration";
-        if (!empty($_POST[$r['COLUMN_NAME']]) &&
-            $r['COLUMN_NAME'] != 'id') {
-//            echo "<br>Build insertion string - iteration if";
-            $keys = $keys . sprintf(", `%s`", $r['COLUMN_NAME']);
-            $values = $values . sprintf(", '%s'", $_POST[$r['COLUMN_NAME']]);
-        } elseif (empty($_POST[$r['COLUMN_NAME']])) {
-            $isDataValid = false;
-        }
-
-    }
-
-//    echo "<br>Build insertion string - after hwile";
-
-    // Close the parentheses of the two sets of data
-    $keys = $keys . ")";
-    $values = $values . ")";
-
-    return sprintf(
-        "INSERT INTO `%s` %s %s",
-        $table_name,
-        $keys,
-        $values
-    );
-}
-
-function query_column_names()
-{
-    global $table_name;
-    global $connection;
-
-    $q_table_columns = sprintf(
-        "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s' AND TABLE_SCHEMA='%s'"
-        , $table_name, $db);
-    $r_table_columns = mysqli_query($connection, $q_table_columns)
-    or die("Query unsuccessful");
-
-    return $r_table_columns;
-}
-
-
-//check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
-//$isValidUser = search_user_in_DB($isDataValid, $username, $password);
-
-
-function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password)
-{
+function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password) {
     // Check the username and password to meet certain criteria
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Suppose data is valid - if one of the further checks fails, the variable
         // will be set to false and data will be invalidated
         $isDataValid = true;
-        if (empty($_POST["username"])) {
+        if (empty($_POST['newUsername'])) {
             $nameErr = "Username is required";
             $isDataValid = false;
         } else {
-            $username = test_input($_POST["username"]);
+            $username = test_input($_POST['newUsername']);
             // Check that username only contains letters, numbers and underscores or periods
             if (!preg_match("/^[a-zA-z0-9_.]*$/", $username)) {
                 $nameErr = "Only letters, numbers, periods and underscores allowed";
@@ -136,10 +30,10 @@ function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &
             }
         }
 
-        if (empty($_POST["password"])) {
+        if (empty($_POST['newPassword'])) {
             $passwordErr = "Password is required";
         } else {
-            $password = $_POST["password"];
+            $password = $_POST['newPassword'];
             // do not trim whitespaces from password
             if (!strlen($password) > 2) {
                 $passwordErr = "Password must have at least 3 characters";
@@ -149,32 +43,31 @@ function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &
     }
 }
 
-function search_user_in_DB($isDataValid, $username, $password)
-{
-    $isValidUser = false;
+function search_user_in_DB($isDataValid, $username, $password) {
+    $isExistingUser = false;
     // If data is valid, check it against users in the database
     if ($isDataValid) {
         require "init.php";
-
         // Query the database for the user and password entered in the login form
         $query_string = sprintf(
-            "SELECT * FROM `accounts` WHERE user='%s' AND password='%s'",
+            "SELECT * FROM `accounts` WHERE username='%s' AND password='%s'",
             $username,
             $password
         );
 
         $result = mysqli_query($connection, $query_string)
-        or die("<br>Querry fail");
+        or die("<br>Querry fail - login");
 
-        // If the result contains some data about
+        // If the result contains some data about the user, proceed with the login, otherwise set the flag to indicate
+        // no user was found
         if (mysqli_num_rows($result)) {
-            $isValidUser = true;
+            $isExistingUser = true;
         } else {
-            $isValidUser = false;
+            $isExistingUser = false;
         }
     }
 
-    return $isValidUser;
+    return $isExistingUser;
 }
 
 // Test data in order to avoid attacks
@@ -186,100 +79,78 @@ function test_input($data)
     return $data;
 }
 
+function build_insertion_string() {
+    $string = "INSERT INTO `accounts` (`id`,`username`,`password`, `privileges`)";
+    $string = $string . " VALUES (NULL, ";
+    $string = $string . " '" . $_POST['newUsername'] . "' " .
+                 ", " . " '" . $_POST['newPassword'] . "' ";
+    $string = $string . ", '2')";
+
+    return $string;
+}
+
+
+// Suppose inserted data is false - this prevents a database check when the
+// page is first run
+$isDataValid = false;
+$isExistingUser = false;
+$mainPage = "main.php";
+
+// define error variables and set to empty values
+$nameErr = $passwordErr = "";
+$password = $username = "";
+
+check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
+
+$isExistingUser = search_user_in_DB($isDataValid, $username, $password);
+
+if ($isExistingUser) {
+    echo "<p class='error'>User already exists</p>";
+//    session_start();
+//    $_SESSION['username'] = $username;
+//    header("Location: " . $mainPage);
+} elseif ($isDataValid) {
+    createNewUser();
+}
+
+function createNewUser() {
+    $username = $_POST['newUsername'];
+    $password = $_POST['newPassword'];
+
+    $q_insert_account = build_insertion_string();
+
+    require "init.php";
+    $result = mysqli_query($connection, $q_insert_account)
+    or die("<br>Querry fail - login");
+
+    if(mysqli_errno($connection)) {
+        echo "<br>User insertion failed<br>";
+        echo mysqli_error($connection);
+    } else {
+        echo "<br> User insertion successful.";
+        echo "<p class='sql_code'> Insert statement:</p>";
+        echo "<p class='sql_code'>" . $q_insert_account . "</p>";
+    }
+}
+
 ?>
 
+<h2>SignIn Page</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-    <table>
+    <!--Add the text fields for username and password. The "value" attribute
+    specifies the initial value of the field. This attribute helps keep
+    data in text fields after submit, in case an error occured with the data.-->
+    Username: <input type="text" name="newUsername" value="<?php echo $username; ?>">
+    <span class="error"> <?php echo $nameErr; ?></span>
+    <br><br>
+    Password: <input type="password" name="newPassword" value="<?php echo $password; ?>">
+    <span class="error"> <?php echo $passwordErr; ?></span>
+    <br><br>
 
-        <colgroup>
+    <button type="button" onclick="loadLogInPage()">Back to Log In</button>
+    <button type="submit" name="submit">Sign In</button>
 
-            <col span="1" style="width: 20%">
-            <col span="1" style="width: 20%">
-            <col span="1" style="width: 20%">
-            <col span="1" style="width: 20%">
-
-        </colgroup>
-
-        <tr>
-
-            <?php
-            // Query columns of the table
-            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-            // 'r' respectively
-            $q_table_columns = sprintf(
-                "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s' AND TABLE_SCHEMA='%s'"
-                , $table_name, $db);
-            $r_table_columns = mysqli_query($connection, $q_table_columns)
-            or die("Query unsuccessful");
-
-            // Generate the table header using php
-            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-                echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-                echo("<br>");
-            }
-
-            ?>
-
-        </tr>
-
-        <tr>
-
-            <?php
-            // Query columns of the table
-            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-            // 'r' respectively
-            $q_table_columns = sprintf(
-                "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s' AND TABLE_SCHEMA='%s'"
-                , $table_name, $db);
-            $r_table_columns = mysqli_query($connection, $q_table_columns)
-            or die("Query unsuccessful");
-
-            // Generate the table header using php
-            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-                switch ($r['DATA_TYPE']) {
-                    case 'int':
-                        $input_type = 'number';
-                        $width = '20px';
-                        break;
-                    case 'varchar':
-                        $input_type = 'text';
-                        $width = '40px';
-                        break;
-                    case 'date':
-                        $input_type = 'date';
-                        $width = '40px';
-                        break;
-                }
-
-                if ($r['COLUMN_NAME'] == 'id') {
-                    echo(
-                    "<td><input name='id' type='text' value='Autoincrement' readonly></input></td>"
-                    );
-                } else {
-                    echo(sprintf(
-                        "<td><input name='%s' type='%s' id='$s'></input></td>",
-                        $r['COLUMN_NAME'],
-                        $input_type,
-                        $r['COLUMN_NAME']
-                    ));
-                }
-
-
-            }
-
-            ?>
-
-        </tr>
-
-    </table>
-
-    <button type="signin">Insert</button>
 </form>
-
 
 </body>
 </html>
@@ -288,21 +159,13 @@ function test_input($data)
 <style>
     input {
         font-size: 0.7rem;
-        display: block;
         height: 0.9rem;
     }
 
-    input[type=date] {
-        min-width: 6rem;
-        width: 93%;
-    }
-
-    input[type=number] {
-        width: 93%;
-    }
-
-    input[type=text] {
-        width: 93%;
+    button {
+        font-size: 0.7rem;
+        height: 1.1rem;
+        /*display: block;*/
     }
 
     button {
@@ -327,3 +190,10 @@ function test_input($data)
         color: red;
     }
 </style>
+
+<script language="javascript">
+    // Load the signIn page, if the user clicks that button
+    function loadLogInPage() {
+        window.location = "login.php";
+    }
+</script>
