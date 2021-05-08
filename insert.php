@@ -9,6 +9,7 @@
 <?php
 
 require_once "init.php";
+require_once "utils.php";
 
 session_start();
 $table_name = $_SESSION['table'];
@@ -23,16 +24,14 @@ $r_column_names = query_column_names();
 //echo "Query column names";
 $q_data_insert = build_insertion_string($r_column_names);
 
-$caller_path = preg_replace('#^https?://#', '', $_SERVER['HTTP_REFERER']);
-$current_script_path = sprintf("%s%s", $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF']);
-
 if ($isDataValid) {
     insertData($q_data_insert);
 }
-// Avoid showing warnings when user first enters page
-elseif ($caller_path == $current_script_path) {
+// Avoid showing warnings when user first enters this page
+elseif (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])) {
     echo "<p class='error'>" . "No empty data fields allowed" . "</p>";
 }
+
 
 function insertData($q_data_insert) {
     global $connection;
