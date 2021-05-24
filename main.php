@@ -9,12 +9,19 @@
 </html>
 
 <style>
+    body {
+        background-color: #FE9920;
+        background-image : url("ctp.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 50%;
+    }
     #left_frame {
         padding:0px;
         position: absolute;
         height: 100%;
         width: 19%;
-        border-style: solid;
+        border-style: none;
         border-color:darkorange;
     }
 
@@ -22,7 +29,7 @@
         position: absolute;
         height: 100%;
         width: 60%;
-        border-style: solid;
+        border-style: none;
         left: 20%;
         border-color: darkgoldenrod;
     }
@@ -31,7 +38,7 @@
         position: absolute;
         height: 100%;
         width: 19%;
-        border-style: solid;
+        border-style: none;
         left: 80.5%;
 
     }

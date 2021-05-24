@@ -220,4 +220,8 @@ function build_deletion_string()
     .error {
         color: red;
     }
+
+    table {
+        background-color:  rgba(216,227,233,0.55);
+    }
 </style>

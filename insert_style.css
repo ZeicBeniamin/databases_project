@@ -1,0 +1,50 @@
+body {
+    /*background-image : url("ctp.jpg");*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
+    background-color: rgba(255,183,167,0);
+}
+
+input {
+    font-size: 0.7rem;
+    display: block;
+    height: 0.9rem;
+    border-style: dashed;
+    border-width: thin;
+    border-color: #ce5f05;
+}
+
+input[type=date] {
+    min-width: 6rem;
+    width: 93%;
+}
+
+input[type=number] {
+    width: 93%;
+}
+
+input[type=text] {
+    width: 93%;
+}
+
+button {
+    padding: 0.1rem;
+    height: 1.2rem;
+}
+
+table {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-collapse: collapse;
+}
+
+.sql_code {
+    font-family: "Courier New", monspace;
+    font-size: 0.55rem;
+    font-size: 0.6rem;
+}
+
+.error {
+    color: red;
+}

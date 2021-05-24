@@ -6,7 +6,7 @@
 <body>
 
 <?php session_start(); ?>
-Welcome <?php echo $_SESSION["username"]; ?><br>
+Welcome, <?php echo $_SESSION["username"] . "!"; ?><br>
 
 </body>
 </html>

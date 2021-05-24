@@ -74,11 +74,6 @@ if (isset($_POST['drivers/delete'])) {
 
 <div class="vertical-menu">
     <form target="middle_frame" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <a href="#" style="background-color: #CE0505FF;">Tests</a>
-        <button name="select" target="middle_frame"> Select</button>
-        <button name="insert" target="middle_frame"> Insert</button>
-        <button name="update" target="middle_frame"> Update</button>
-        <button name="delete" target="middle_frame"> Delete</button>
 
         <a name="#" class="active">Drivers</a>
         <button name="drivers/select" target="middle_frame"> Select</button>
@@ -127,7 +122,7 @@ if (isset($_POST['drivers/delete'])) {
 
     .vertical-menu a {
         height: 19px;
-        background-color: #eee; /* Grey background color */
+        background-color: red; /* Grey background color */
         color: black; /* Black text color */
         display: block; /* Make the links appear below each other */
         padding: 2px; /* Add some padding */
@@ -137,12 +132,13 @@ if (isset($_POST['drivers/delete'])) {
     }
 
     .vertical-menu a.active {
-        background-color: #ce5f05; /* Add an orange color to the "active/current" link */
-        color: white;
+        background-color: rgba(48, 86, 161, 0.97); /* Add an orange color to the "active/current" link */
+        color: #d8e3e9; /* Font color */
         font-weight: bold;
     }
 
     button {
+        background-color: rgba(95, 180, 156, 0.87);
         display: block;
         border-style: none;
         height: 1.2rem;
@@ -156,7 +152,6 @@ if (isset($_POST['drivers/delete'])) {
     }
 
     button:hover {
-        background-color: darkgoldenrod;
-
+        background-color: rgba(86, 110, 61, 0.79);
     }
 </style>

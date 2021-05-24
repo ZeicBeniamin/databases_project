@@ -83,4 +83,7 @@ echo $webp_title . "<br>";
         font-size: 0.55rem;
         font-size: 0.6rem;
     }
+    table {
+        background-color:  rgba(216,227,233,0.55);
+    }
 </style>
