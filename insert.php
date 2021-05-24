@@ -8,8 +8,10 @@
 <body>
 <?php
 
-require_once "init.php";
-require_once "utils.php";
+
+require "init.php";
+require "utils.php";
+require "insert_utils.php";
 
 session_start();
 $table_name = $_SESSION['table'];
@@ -20,259 +22,126 @@ echo $webp_title . "<br>";
 // page is first run
 $isDataValid = false;
 
-$r_column_names = query_column_names();
+$r_column_names = query_column_names($table_name);
 //echo "Query column names";
 $q_data_insert = build_insertion_string($r_column_names);
 
 if ($isDataValid) {
     insertData($q_data_insert);
-}
-// Avoid showing warnings when user first enters this page
+} // Avoid showing warnings when user first enters this page
 elseif (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])) {
     echo "<p class='error'>" . "No empty data fields allowed" . "</p>";
 }
 
 
-function insertData($q_data_insert) {
-    global $connection;
-    try {
-        mysqli_query($connection, $q_data_insert);
-    }
-    catch (Exception $exception) {
-    }
-    if(mysqli_errno($connection)) {
-        echo "<br>Insertion failed<br>";
-        echo mysqli_error($connection);
-    } else {
+/**
+ * Insert data in database, using on a given SQL query
+ *
+ * Calls th function "query_db", that establishes a connection with the database and then runs the SQL query
+ * @param string $q_data_insert SQL statement to be used for inserting data
+ */
+function insertData($q_data_insert)
+{
+    // Show a message if the insertion was succesful
+    if (query_db($q_data_insert)) {
         echo "<br> Insertion completed successfully.";
         echo "<p class='sql_code'> Insert statement:";
         echo "<br>" . $q_data_insert . "</p>";
     }
-
-}
-
-function build_insertion_string(&$r_column_names) {
-    global $table_name;
-    global $isDataValid;
-    $isDataValid = true;
-
-    // 'id' is the first column in every table
-    $keys = "(`id`";
-    $values = "VALUES (NULL";
-
-//    echo "<br>Build insertion string - interior";
-
-    while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
-//        echo "<br>Build insertion string - iteration";
-        if(!empty($_POST[$r['COLUMN_NAME']]) &&
-            $r['COLUMN_NAME'] != 'id') {
-//            echo "<br>Build insertion string - iteration if";
-            $keys = $keys . sprintf(", `%s`", $r['COLUMN_NAME']);
-            $values = $values . sprintf(", '%s'", $_POST[$r['COLUMN_NAME']]);
-        }
-        elseif (empty($_POST[$r['COLUMN_NAME']])) {
-            $isDataValid = false;
-        }
-
-    }
-
-//    echo "<br>Build insertion string - after hwile";
-
-    // Close the parentheses of the two sets of data
-    $keys = $keys . ")";
-    $values = $values . ")";
-
-    return sprintf(
-        "INSERT INTO `%s` %s %s",
-        $table_name,
-        $keys,
-        $values
-    );
-}
-
-function query_column_names() {
-    global $table_name;
-    global $connection;
-
-    $q_table_columns = sprintf(
-        "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-    $r_table_columns = mysqli_query($connection, $q_table_columns)
-    or die("Query unsuccessful");
-
-    return $r_table_columns;
-}
-
-
-//check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
-//$isValidUser = search_user_in_DB($isDataValid, $username, $password);
-
-
-
-
-
-function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password) {
-    // Check the username and password to meet certain criteria
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Suppose data is valid - if one of the further checks fails, the variable
-        // will be set to false and data will be invalidated
-        $isDataValid = true;
-        if (empty($_POST["username"])) {
-            $nameErr = "Username is required";
-            $isDataValid = false;
-        } else {
-            $username = test_input($_POST["username"]);
-            // Check that username only contains letters, numbers and underscores or periods
-            if (!preg_match("/^[a-zA-z0-9_.]*$/", $username)) {
-                $nameErr = "Only letters, numbers, periods and underscores allowed";
-                $isDataValid = false;
-            } elseif (empty($username)) {
-                $nameErr = "User name must not contain trailing whitespaces";
-                $isDataValid = false;
-            }
-        }
-
-        if (empty($_POST["password"])) {
-            $passwordErr = "Password is required";
-        } else {
-            $password = $_POST["password"];
-            // do not trim whitespaces from password
-            if (!strlen($password) > 2) {
-                $passwordErr = "Password must have at least 3 characters";
-                $isDataValid = false;
-            }
-        }
-    }
-}
-
-function search_user_in_DB($isDataValid, $username, $password) {
-    $isValidUser = false;
-    // If data is valid, check it against users in the database
-    if ($isDataValid) {
-        require "init.php";
-
-        // Query the database for the user and password entered in the login form
-        $query_string = sprintf(
-            "SELECT * FROM `accounts` WHERE user='%s' AND password='%s'",
-            $username,
-            $password
-        );
-
-        $result = mysqli_query($connection, $query_string)
-        or die("<br>Querry fail");
-
-        // If the result contains some data about
-        if (mysqli_num_rows($result)) {
-            $isValidUser = true;
-        } else {
-            $isValidUser = false;
-        }
-    }
-
-    return $isValidUser;
-}
-
-// Test data in order to avoid attacks
-function test_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 
 ?>
 
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" >
-<table>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <table>
 
-    <colgroup>
+        <colgroup>
 
-        <col span="1" style="width: 20%">
-        <col span="1" style="width: 20%">
-        <col span="1" style="width: 20%">
-        <col span="1" style="width: 20%">
+            <col span="1" style="width: 20%">
+            <col span="1" style="width: 20%">
+            <col span="1" style="width: 20%">
+            <col span="1" style="width: 20%">
 
-    </colgroup>
+        </colgroup>
 
-    <tr>
+        <tr>
 
-        <?php
-        // Query columns of the table
-        // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-        // 'r' respectively
-        $q_table_columns = sprintf(
-            "SELECT *
+            <?php
+            // Query columns of the table
+            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
+            // 'r' respectively
+            $q_table_columns = sprintf(
+                "SELECT *
                 FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-        $r_table_columns = mysqli_query($connection, $q_table_columns)
-        or die("Query unsuccessful");
+                WHERE TABLE_NAME = '%s'
+                ORDER BY ORDINAL_POSITION", $table_name);
+            $r_table_columns = mysqli_query($connection, $q_table_columns)
+            or die("Query unsuccessful");
 
-        // Generate the table header using php
-        while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-            echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-            echo("<br>");
-        }
-
-        ?>
-
-    </tr>
-
-    <tr>
-
-        <?php
-        // Query columns of the table
-        // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-        // 'r' respectively
-        $q_table_columns = sprintf(
-            "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-        $r_table_columns = mysqli_query($connection, $q_table_columns)
-        or die("Query unsuccessful");
-
-        // Generate the table header using php
-        while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-            switch ($r['DATA_TYPE']) {
-                case 'int':
-                    $input_type = 'number';
-                    $width = '20px';
-                    break;
-                case 'varchar':
-                    $input_type = 'text';
-                    $width = '40px';
-                    break;
-                case 'date':
-                    $input_type = 'date';
-                    $width = '40px';
-                    break;
+            // Generate the table header using php
+            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
+                echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
+                echo("<br>");
             }
 
-            if ($r['COLUMN_NAME'] == 'id') {
-                echo(
+            ?>
+
+        </tr>
+
+        <tr>
+
+            <?php
+            // Query columns of the table
+            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
+            // 'r' respectively
+            $q_table_columns = sprintf(
+                "SELECT *
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = '%s'
+                ORDER BY ORDINAL_POSITION", $table_name);
+            $r_table_columns = mysqli_query($connection, $q_table_columns)
+            or die("Query unsuccessful");
+
+            // Generate the content cells using php
+            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
+                switch ($r['DATA_TYPE']) {
+                    case 'int':
+                        $input_type = 'number';
+                        $width = '20px';
+                        break;
+                    case 'varchar':
+                        $input_type = 'text';
+                        $width = '40px';
+                        break;
+                    case 'date':
+                        $input_type = 'date';
+                        $width = '40px';
+                        break;
+                }
+
+                if ($r['COLUMN_NAME'] == 'id') {
+                    echo(
                     "<td><input name='id' type='text' value='Autoincrement' readonly></input></td>"
-                );
-            } else {
-                echo(sprintf(
-                    "<td><input name='%s' type='%s' id='$s'></input></td>",
-                    $r['COLUMN_NAME'],
-                    $input_type,
-                    $r['COLUMN_NAME']
-                ));
+                    );
+                } else {
+                    echo(sprintf(
+                        "<td><input name='%s' type='%s' id='$s'></input></td>",
+                        $r['COLUMN_NAME'],
+                        $input_type,
+                        $r['COLUMN_NAME']
+                    ));
+                }
+
+
             }
 
+            ?>
 
+        </tr>
 
-        }
+    </table>
 
-        ?>
-
-    </tr>
-
-</table>
-
-<button type="submit">Insert</button>
+    <button type="submit">Insert</button>
 </form>
 
 
@@ -299,10 +168,12 @@ function test_input($data)
     input[type=text] {
         width: 93%;
     }
+
     button {
         padding: 0.1rem;
         height: 1.2rem;
     }
+
     table {
         border-color: black;
         border-style: solid;

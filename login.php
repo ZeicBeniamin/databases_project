@@ -9,47 +9,14 @@
 
 <?php
 require_once "utils.php";
-function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password) {
-    // Check the username and password to meet certain criteria
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Suppose data is valid - if one of the further checks fails, the variable
-        // will be set to false and data will be invalidated
-        $isDataValid = true;
-        if (empty($_POST["username"])) {
-            $nameErr = "Username is required";
-            $isDataValid = false;
-        } else {
-            $username = test_input($_POST["username"]);
-            // Check that username only contains letters, numbers and underscores or periods
-            if (!preg_match("/^[a-zA-z0-9_.]*$/", $username)) {
-                $nameErr = "Only letters, numbers, periods and underscores allowed";
-                $isDataValid = false;
-            } elseif (empty($username)) {
-                $nameErr = "User name must not contain trailing whitespaces";
-                $isDataValid = false;
-            }
-        }
-
-        if (empty($_POST["password"])) {
-            $passwordErr = "Password is required";
-        } else {
-            $password = $_POST["password"];
-            // do not trim whitespaces from password
-            if (!strlen($password) > 2) {
-                $passwordErr = "Password must have at least 3 characters";
-                $isDataValid = false;
-            }
-        }
-    }
-}
 
 if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])) {
     // Suppose inserted data is false - this prevents a database check when the
     // page is first run
-    $isDataValid = false;
     $isExistingUser = false;
     $isValidPassword = false;
     $mainPage = "main.php";
+
 
     // define error variables and set to empty values
     $nameErr = $passwordErr = "";
@@ -57,9 +24,8 @@ if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    if ($check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
 
-    if ($isDataValid) {
+    if (check_user_and_password($nameErr, $passwordErr, $username, $password)) {
         $isExistingUser = search_user_in_DB($username);
         if ($isExistingUser) {
             $isValidPassword = search_user_and_pass_in_DB($username, $password);

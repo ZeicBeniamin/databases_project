@@ -219,3 +219,67 @@ function test_input($data)
     $data = htmlspecialchars($data);
     return $data;
 }
+
+/**
+ * Fetches the column names and column types for a specific table.
+ *
+ * Columns are ordered in ascending order by ORDINAL_POSITION
+ * @param string $table_name Name of the table for which to fetch the columns
+ * @return bool|mysqli_result Columns of the table
+ *
+ */
+
+function query_column_names($table_name)
+{
+    require "init.php";
+
+    $q_table_columns = sprintf(
+        "SELECT *
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = '%s'
+                ORDER BY ORDINAL_POSITION", $table_name);
+    $r_table_columns = mysqli_query($connection, $q_table_columns)
+    or die("Query unsuccessful");
+
+    return $r_table_columns;
+}
+
+/**
+ * Builds the string to be used for insertion of data.
+ *
+ * Data inserted by the user is taken from the fields in the website. Each field has the "name"attribute identical to
+ * the name of the column.
+ * @param mysqli $r_column_names Object containing the names of the table's columns, together with their type
+ * @return string The string to be used for data insertion
+ */
+
+function build_insertion_string(&$r_column_names)
+{
+    global $table_name;
+    global $isDataValid;
+    $isDataValid = true;
+
+    $keys = "(`id`";
+    $values = "VALUES (NULL";
+
+    while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
+        if (!empty($_POST[$r['COLUMN_NAME']]) &&
+            $r['COLUMN_NAME'] != 'id') {
+            $keys = $keys . sprintf(", `%s`", $r['COLUMN_NAME']);
+            $values = $values . sprintf(", '%s'", $_POST[$r['COLUMN_NAME']]);
+        } elseif (empty($_POST[$r['COLUMN_NAME']])) {
+            $isDataValid = false;
+        }
+
+    }
+    // Close the parentheses of the keys and values strings
+    $keys = $keys . ")";
+    $values = $values . ")";
+
+    return sprintf(
+        "INSERT INTO `%s` %s %s",
+        $table_name,
+        $keys,
+        $values
+    );
+}
