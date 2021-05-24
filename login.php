@@ -8,7 +8,7 @@
 <body>
 
 <?php
-
+require_once "utils.php";
 function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &$password) {
     // Check the username and password to meet certain criteria
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -43,60 +43,38 @@ function check_input_data(&$isDataValid, &$nameErr, &$passwordErr, &$username, &
     }
 }
 
-function search_user_in_DB($isDataValid, $username, $password) {
-    $isValidUser = false;
-    // If data is valid, check it against users in the database
+if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])) {
+    // Suppose inserted data is false - this prevents a database check when the
+    // page is first run
+    $isDataValid = false;
+    $isExistingUser = false;
+    $isValidPassword = false;
+    $mainPage = "main.php";
+
+    // define error variables and set to empty values
+    $nameErr = $passwordErr = "";
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    if ($check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
+
     if ($isDataValid) {
-        require "init.php";
-
-        // Query the database for the user and password entered in the login form
-        $query_string = sprintf(
-            "SELECT * FROM `accounts` WHERE username='%s' AND password='%s'",
-            $username,
-            $password
-        );
-
-        $result = mysqli_query($connection, $query_string)
-        or die("<br>Querry fail - login");
-
-        // If the result contains some data about the user
-        if (mysqli_num_rows($result)) {
-            $isValidUser = true;
-        } else {
-            $isValidUser = false;
+        $isExistingUser = search_user_in_DB($username);
+        if ($isExistingUser) {
+            $isValidPassword = search_user_and_pass_in_DB($username, $password);
         }
     }
 
-    return $isValidUser;
-}
-
-// Test data in order to avoid attacks
-function test_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-
-// Suppose inserted data is false - this prevents a database check when the
-// page is first run
-$isDataValid = false;
-$isValidUser = false;
-$mainPage = "main.php";
-
-// define error variables and set to empty values
-$nameErr = $passwordErr = "";
-$password = $username = "";
-
-check_input_data($isDataValid, $nameErr, $passwordErr, $username, $password);
-
-$isValidUser = search_user_in_DB($isDataValid, $username, $password);
-
-if ($isValidUser) {
-    session_start();
-    $_SESSION['username'] = $username;
-    header("Location: " . $mainPage);
+    if ($isExistingUser && $isValidPassword) {
+        session_start();
+        $_SESSION['username'] = $username;
+        header("Location: " . $mainPage);
+    } elseif (!$isExistingUser) {
+        echo "<p class='error'>User does not exist</p>";
+    } elseif (!$isValidPassword) {
+        echo "<p class='error'>Wrong password</p>";
+    }
 }
 
 ?>
