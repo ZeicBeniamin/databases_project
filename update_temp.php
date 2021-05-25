@@ -6,27 +6,32 @@
 </head>
 <body>
 <?php
-require "utils/init.php";
+require "init.php";
 
 $table_name = $_POST['table_name'];
 $id = $_POST['id'];
 $webp_title = ucfirst($table_name) . " table";
-echo $webp_title;
-echo " - DELETE";
+echo $webp_title . "<br>";
+// Suppose inserted data is false - this prevents a database check when the
+// page is first run
+$isDataValid = false;
 
-$q_data_delete = build_deletion_string();
+$r_column_names = query_column_names();
+//echo "Query column names";
+$q_data_insert = build_insertion_string($r_column_names);
 //echo "<br>Updating string" . $q_data_insert;
 
 $caller_path = preg_replace('#^https?://#', '', $_SERVER['HTTP_REFERER']);
 $current_script_path = sprintf("%s%s", $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF']);
 
-// Avoid data deletion before user presses button
-if ($caller_path == $current_script_path && isset($_POST['btnDelete'])) {
-    deleteData($q_data_delete);
-    echo "Delted data";
+if ($isDataValid) {
+    insertData($q_data_insert);
+} // Avoid showing warnings when user first enters page
+elseif ($caller_path == $current_script_path) {
+    echo "<p class='error'>" . "Invalid data - some fields might be empty" . "</p>";
 }
 
-function deleteData($q_data_insert)
+function insertData($q_data_insert)
 {
     global $connection;
     try {
@@ -34,31 +39,82 @@ function deleteData($q_data_insert)
     } catch (Exception $exception) {
     }
     if (mysqli_errno($connection)) {
-        echo "<br>Delete failed<br>";
+        echo "<br>Update failed<br>";
         echo mysqli_error($connection);
         echo "<br>" . $q_data_insert;
 
     } else {
-        echo "<br> Delete completed successfully.";
-        echo "<p class='sql_code'> Delete statement:";
+        echo "<br> Update completed successfully.";
+        echo "<p class='sql_code'> Update statement:";
         echo "<br>" . $q_data_insert . "</p>";
     }
 
 }
 
-function build_deletion_string()
+function build_insertion_string(&$r_column_names)
 {
     global $table_name;
+    global $isDataValid;
     global $id;
+    $isDataValid = true;
+
+    // 'id' is the first column in every table
+    $keys = "";
+
+//    echo "<br>Build insertion string - interior";
+
+    while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
+//        echo "<br>Build insertion string - iteration";
+//        echo("<br>while " . $_POST[$r['COLUMN_NAME']] . "=>" . $r['COLUMN_NAME']);
+        if (!empty($_POST[$r['COLUMN_NAME']]) &&
+            $r['COLUMN_NAME'] != 'id') {
+//            echo "<br>Build insertion string - iteration if";
+            $keys = $keys . sprintf(", `%s` = '%s'", $r['COLUMN_NAME'], $_POST[$r['COLUMN_NAME']]);
+        } elseif (empty($_POST[$r['COLUMN_NAME']])) {
+            $isDataValid = false;
+        }
+
+    }
+
+//    echo "<br>Build insertion string - after hwile";
 
     return sprintf(
-        "DELETE 
-                FROM `%s` 
+        "UPDATE `%s`
+                SET %s
                 WHERE `%s`.`id` = %s",
         $table_name,
+        ltrim($keys, ','),
         $table_name,
         $id
     );
+}
+
+function query_column_names()
+{
+    global $table_name;
+    global $connection;
+
+    $q_table_columns = sprintf(
+        "SELECT *
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = '%s'", $table_name);
+//    echo "<br>" . $q_table_columns;
+    $r_table_columns = mysqli_query($connection, $q_table_columns)
+    or die("Query column names unsuccessful");
+    if (mysqli_errno($connection)) {
+        echo(mysqli_errno($connection));
+    }
+
+    return $r_table_columns;
+}
+
+// Test data in order to avoid attacks
+function test_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
 
 ?>
@@ -154,7 +210,7 @@ function build_deletion_string()
                     );
                 } else {
                     echo(sprintf(
-                        "<td><input name='%s' type='%s' id='%s' value='%s' readonly></input></td>",
+                        "<td><input name='%s' type='%s' id='%s' value='%s'></input></td>",
                         $r['COLUMN_NAME'],
                         $input_type,
                         $r['COLUMN_NAME'],
@@ -171,7 +227,7 @@ function build_deletion_string()
 
     </table>
 
-    <button name='btnDelete' type="submit">Delete</button>
+    <button type="submit">Update</button>
 </form>
 
 
@@ -219,9 +275,5 @@ function build_deletion_string()
 
     .error {
         color: red;
-    }
-
-    table {
-        background-color:  rgba(216,227,233,0.55);
     }
 </style>

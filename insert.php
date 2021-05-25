@@ -9,10 +9,7 @@
 <body>
 <?php
 
-
-require "init.php";
-require "utils.php";
-require "insert_utils.php";
+require "utils/insert_utils.php";
 
 session_start();
 $table_name = $_SESSION['table'];
@@ -21,7 +18,9 @@ echo $webp_title . "<br>";
 
 $q_data_insert = build_insertion_string($table_name);
 
-if (is_insert_data_valid($table_name)) {
+if (is_data_non_empty($table_name)) {
+    // String building should be found inside this if
+    //$q_data_insert = build_insertion_string($table_name);
     insertData($q_data_insert);
 } // Avoid showing warnings when user first enters this page
 elseif (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])) {
@@ -40,19 +39,12 @@ elseif (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERV
             <col span="1" style="width: 20%">
         </colgroup>
 
-        <tr>
-            <?php
-            // Generate the table header using php
-            print_table_header($table_name);
-            ?>
-        </tr>
-
-        <tr>
-            <?php
-            // Generate the table body. It consists of a form in which the user will input data.
-            print_insert_form($table_name);
-            ?>
-        </tr>
+        <?php
+        // Generate the table header using php
+        print_table_header($table_name);
+        // Generate the table body. It consists of a form in which the user will input data.
+        print_insert_form($table_name);
+        ?>
 
     </table>
 
@@ -65,6 +57,6 @@ elseif (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERV
 
 <style>
     table {
-        background-color:  rgba(216,227,233,0.55);
+        background-color: rgba(216, 227, 233, 0.55);
     }
 </style>

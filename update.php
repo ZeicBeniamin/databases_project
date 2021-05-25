@@ -6,15 +6,15 @@
 </head>
 
 <body>
-<!--Trecut de body<br>-->
 <?php
-require_once "init.php";
-
+require "utils/init.php";
+// Get the table name and show it on the webpage
 session_start();
 $table_name = $_SESSION['table'];
 $webp_title = ucfirst($table_name) . " table";
 echo $webp_title . "<br>";
 ?>
+
 <form id="update_form" method="POST" action="update_i.php">
     <!-- Pass the table name as an argument to the PHP script. -->
     <input type="hidden" name="table_name" value="<?=$table_name;?>"/>

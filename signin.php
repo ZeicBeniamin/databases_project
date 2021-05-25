@@ -9,8 +9,8 @@
 
 <?php
 
-require "init.php";
-require "utils.php";
+require "utils/init.php";
+require "utils/utils.php";
 
 // Suppose inserted data is false - this prevents a database check when the
 // page is first run and the fields are empty

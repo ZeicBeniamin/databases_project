@@ -8,9 +8,11 @@
 <body>
 <?php
 
-require_once "init.php";
+require_once "utils/init.php";
+require "utils/utils.php";
+require "utils/select_utils.php";
 
-//echo "Trecut de init.php <br>";
+//echo "Trecut de utils/init.php <br>";
 // Define the required data
 session_start();
 $table_name = $_SESSION['table'];
@@ -30,48 +32,12 @@ echo $webp_title . "<br>";
 
     </colgroup>
 
-    <tr>
-
-        <?php
-        // Query columns of the table
-        // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-        // 'r' respectively
-        $q_table_columns = sprintf(
-            "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-        $r_table_columns = mysqli_query($connection, $q_table_columns)
-        or die("Query unsuccessful");
-
-        // Generate the table header using php
-        while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-            echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-            echo("<br>");
-        }
-
-        ?>
-
-    </tr>
 
     <?php
-    // Query data of the drivers
-    $q_table_data = sprintf("SELECT * FROM %s", $table_name);
-    $r_table_data = mysqli_query($connection, $q_table_data)
-    or die("Query unsuccessful");
-
-    // Generate the table rows using php
-    while ($r = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC)) {
-        echo "<tr>";
-        // Make a new cell out of each data field in the currently processed row.
-        foreach (array_keys($r) as $column_name) {
-            echo (sprintf("<td> %s </td>", $r[$column_name]));
-        }
-        echo "</tr>";
-    }
-
+    print_table_header($table_name);
+    print_entities($table_name);
     ?>
 </table>
-
 
 
 </body>
@@ -83,7 +49,9 @@ echo $webp_title . "<br>";
         font-size: 0.55rem;
         font-size: 0.6rem;
     }
+
     table {
-        background-color:  rgba(216,227,233,0.55);
+        background-color: rgba(216, 227, 233, 0.55);
+        border-collapse: collapse;
     }
 </style>

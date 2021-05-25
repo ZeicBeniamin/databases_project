@@ -8,7 +8,7 @@
 <body>
 <!--Trecut de body<br>-->
 <?php
-require_once "init.php";
+require_once "utils/init.php";
 
 session_start();
 $table_name = $_SESSION['table'];
@@ -74,7 +74,7 @@ echo "Delete";
         ?>
     </table>
 
-    <button type="button" onclick="checkAndSubmit()">Modify</button>
+    <button type="button" onclick="checkAndSubmit()">Delete</button>
 </form>
 
 </body>
