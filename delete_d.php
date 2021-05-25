@@ -7,6 +7,8 @@
 <body>
 <?php
 require "utils/init.php";
+require_once "utils/utils.php";
+require_once "utils/delete_utils.php";
 
 $table_name = $_POST['table_name'];
 $id = $_POST['id'];
@@ -77,97 +79,17 @@ function build_deletion_string()
 
         </colgroup>
 
-        <tr>
 
-            <?php
-            // Query columns of the table
-            // As a convention, I tried to prepend the names of the variables that held a query string or a result with 'q' or with
-            // 'r' respectively
-            $q_table_columns = sprintf(
-                "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-            $r_table_columns = mysqli_query($connection, $q_table_columns)
-            or die("Query unsuccessful");
-
-            // Generate the table header using php
-            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-                echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-                echo("<br>");
-            }
-
-            ?>
-
-        </tr>
-
-        <tr>
-
-            <?php
-
-            $q_table_columns = sprintf(
-                "SELECT *
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_NAME = '%s'", $table_name);
-            $r_table_columns = mysqli_query($connection, $q_table_columns)
-            or die("Query unsuccessful");
+        <?php
+        print_table_header($table_name);
+        ?>
 
 
-            $q_table_data = sprintf("SELECT * FROM %s WHERE `id` = %d", $table_name, $id);
-            //            echo $q_table_data;
-            $r_table_data = mysqli_query($connection, $q_table_data)
-            or die("Query unsuccessful");
-            //
-            //            // Generate the table rows using php
-            //            while ($r = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC)) {
-            //                echo "<tr>";
-            //                echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['id']));
-            //                // Make a new cell out of each data field in the currently processed row.
-            //                foreach (array_keys($r) as $column_name) {
-            //                    echo(sprintf("<td id='%s'> %s </td>", $column_name . $r['id'], $r[$column_name]));
-            //                }
-            //                echo "</tr>";
-            //            }
 
-            // The result will contain only one array, so we fetch it
-            $data = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC);
+        <?php
+        display_selected_entity($table_name, $id);
+        ?>
 
-            // Generate the table header using php
-            while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-                switch ($r['DATA_TYPE']) {
-                    case 'int':
-                        $input_type = 'number';
-                        $width = '20px';
-                        break;
-                    case 'varchar':
-                        $input_type = 'text';
-                        $width = '40px';
-                        break;
-                    case 'date':
-                        $input_type = 'date';
-                        $width = '40px';
-                        break;
-                }
-
-                if ($r['COLUMN_NAME'] == 'id') {
-                    echo(
-                    sprintf("<td><input name='id' type='text' value='%s' readonly></input></td>",$data[$r['COLUMN_NAME']])
-                    );
-                } else {
-                    echo(sprintf(
-                        "<td><input name='%s' type='%s' id='%s' value='%s' readonly></input></td>",
-                        $r['COLUMN_NAME'],
-                        $input_type,
-                        $r['COLUMN_NAME'],
-                        $data[$r['COLUMN_NAME']]
-                    ));
-                }
-
-
-            }
-
-            ?>
-
-        </tr>
 
     </table>
 
@@ -219,9 +141,10 @@ function build_deletion_string()
 
     .error {
         color: red;
+        background-color: rgba(216, 227, 233, 0.55);;
     }
 
     table {
-        background-color:  rgba(216,227,233,0.55);
+        background-color: rgba(216, 227, 233, 0.55);
     }
 </style>

@@ -7,7 +7,7 @@
 <body>
 <?php
 require "utils/init.php";
-require "utils/utils_update.php";
+require "utils/update_utils.php";
 require "utils/insert_utils.php";
 
 $table_name = $_POST['table_name'];

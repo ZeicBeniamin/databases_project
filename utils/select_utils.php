@@ -1,10 +1,11 @@
 <?php
 
+require_once "utils/utils.php";
+
 /**
- * Prints all the entities stored in a given table
+ * Prints all the entities stored in a given table.
  *
- *
- * @param string $table_name
+ * @param string $table_name Name of the table from which the entities will be taken
  */
 function print_entities($table_name)
 {
