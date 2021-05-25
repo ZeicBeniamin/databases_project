@@ -1,5 +1,6 @@
 <?php
 
+require_once "utils/utils.php";
 /**
  * Insert data in database, using on a given SQL query
  *
@@ -55,31 +56,12 @@ function build_insertion_string($table_name)
 }
 
 /**
- * Checks that user entered data is not void.
- *
- * The user input is taken by means of a form. The form has an input element for each of the columns of the table whose
- * name is passed as a parameter to this function. The function takes the content of every input of the form and checks
- * that it is non-empty.
- * @param string $table_name Name of the table from which the column names will be taken.
- * @return bool TRUE if none of the inputs is void, FALSE otherwise
- */
-function is_insert_data_valid($table_name)
-{
-    $r_column_names = query_column_names($table_name);
-    while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
-        if (empty($_POST[$r['COLUMN_NAME']])) {
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
  * Creates a data collection form, for the table received as an argument.
  * @param string $table_name Name of the table for which the form should be created.
  */
 function print_insert_form($table_name)
 {
+    echo "<tr>";
     $r_table_columns = query_column_names($table_name);
 
     // Generate the content cells using php
@@ -112,21 +94,7 @@ function print_insert_form($table_name)
             ));
         }
     }
-}
+    echo "</tr>";
 
-/**
- * Prints the elements of a table header.
- *
- * The elements of the header are the names of the columns contained in the table given by "table_name".
- * @param string $table_name Name of the table. The table header will use columns of this table as the text elements
- */
-function print_table_header($table_name)
-{
-    $r_table_columns = query_column_names($table_name);
-
-    while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-        echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-        echo("<br>");
-    }
 }
 

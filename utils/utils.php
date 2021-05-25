@@ -113,31 +113,31 @@ function build_account_insertion_query($username, $password)
     return $query_statement;
 }
 
-/**
- * Searches for a specific user in the 'accounts' table of the database.
- *
- * @param mysqli $connection Database connection
- * @param string $username Username of the user we search for
- * @return bool Returns TRUE if user exists in database, FALSE otherwise.
- */
-function search_user_in_DB($username)
-{
-    require "init.php";
-    // Query the database for the user and password entered in the login form
-    $query_string = sprintf(
-        "SELECT * FROM `accounts` WHERE username='%s'",
-        $username
-    );
-    $result = query_db($query_string);
-    // If the result contains some data about the user, proceed with the login, otherwise set the flag to indicate
-    // no user was found
-    if (mysqli_num_rows($result)) {
-        $isExistingUser = true;
-    } else {
-        $isExistingUser = false;
-    }
-    return $isExistingUser;
-}
+///**
+// * Searches for a specific user in the 'accounts' table of the database.
+// *
+// * @param mysqli $connection Database connection
+// * @param string $username Username of the user we search for
+// * @return bool Returns TRUE if user exists in database, FALSE otherwise.
+// */
+//function search_user_in_DB($username)
+//{
+//    require "init.php";
+//    // Query the database for the user and password entered in the login form
+//    $query_string = sprintf(
+//        "SELECT * FROM `accounts` WHERE username='%s'",
+//        $username
+//    );
+//    $result = query_db($query_string);
+//    // If the result contains some data about the user, proceed with the login, otherwise set the flag to indicate
+//    // no user was found
+//    if (mysqli_num_rows($result)) {
+//        $isExistingUser = true;
+//    } else {
+//        $isExistingUser = false;
+//    }
+//    return $isExistingUser;
+//}
 
 
 /**
@@ -244,4 +244,41 @@ function query_column_names($table_name)
     return $r_table_columns;
 }
 
+/**
+ * Checks that user entered data is not void.
+ *
+ * The user input is taken by means of a form. The form has an input element for each of the columns of the table whose
+ * name is passed as a parameter to this function. The function takes the content of every input of the form and checks
+ * that it is non-empty.
+ * @param string $table_name Name of the table from which the column names will be taken.
+ * @return bool TRUE if none of the inputs is void, FALSE otherwise
+ */
+function is_data_non_empty($table_name)
+{
+    $r_column_names = query_column_names($table_name);
+    while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
+        if (empty($_POST[$r['COLUMN_NAME']])) {
+            return false;
+        }
+    }
+    return true;
+}
 
+/**
+ * Prints the elements of a table header.
+ *
+ * The elements of the header are the names of the columns contained in the table given by "table_name".
+ * @param string $table_name Name of the table. The table header will use columns of this table as the text elements
+ */
+function print_table_header($table_name)
+{
+    echo "<tr>";
+    $r_table_columns = query_column_names($table_name);
+
+    while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
+        echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
+        echo("<br>");
+    }
+    echo "</tr>";
+
+}
