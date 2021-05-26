@@ -1,62 +1,15 @@
 <?php
 
-require_once "utils/utils.php";
+require_once "utils.php";
 
 /**
- * Prints the elements of a table header, preceded by a "Select" header element.
+ * Display an entity specified by its id from a specific table, specified by its table name.
  *
- * The elements of the header are the names of the columns contained in the table given by "table_name".
- * @param string $table_name Name of the table. The table header will use columns of this table as the text elements
+ * The id of the entity and the table name should be passed as arguments to the function. The caller must be sure that
+ * the id exists in the given table
+ * @param string $table_name Name of the table that contains an entity with the given id
+ * @param int $id Id of the entity
  */
-function print_select_table_header($table_name)
-{
-    echo "<tr>";
-
-    // The first column will be the selection one
-    echo(sprintf("<th><b>%s</b></th>", "Select"));
-
-    $r_table_columns = query_column_names($table_name);
-
-    while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-        echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-        echo("<br>");
-    }
-    echo "</tr>";
-
-}
-
-/**
- * Prints all the entities stored in a given table, preceded by a radio button.
- *
- * The radio button will be used for selecting one of the entities for deletion.
- * @param string $table_name Name of the table from which the entities will be taken
- */
-function print_entities_checklist($table_name)
-{
-    // Get all the entities in the specifed table
-    $q_table_data = sprintf("SELECT * FROM %s", $table_name);
-    $r_table_data = query_db($q_table_data);
-
-    // Generate the table rows using php
-    while ($r = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC)) {
-        echo "<tr>";
-        // Print a radio button in front of each row.
-        echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['id']));
-        // Make a new cell out of each data field in the currently processed row.
-        foreach (array_keys($r) as $column_name) {
-            echo(sprintf("<td> %s </td>", $r[$column_name]));
-        }
-        echo "</tr>";
-    }
-}
-
-/**
- * TODO: Add documentation
- *
- * @param $table_name
- * @param $id
- */
-
 function display_selected_entity($table_name, $id)
 {
     $r_table_columns = query_column_names($table_name);
@@ -89,4 +42,37 @@ function display_selected_entity($table_name, $id)
             $data[$r['COLUMN_NAME']]
         ));
     }
+}
+
+/**
+ * Execute the deletion string sent as a function parameter
+ *
+ * @param string $q_data_delete The SQL deletion statement to be executed
+ */
+function deleteData($q_data_delete)
+{
+    if (query_db($q_data_delete)) {
+        echo "<br> Delete completed successfully.";
+        echo "<p class='sql_code'> Delete statement:";
+        echo "<br>" . $q_data_delete . "</p>";
+    }
+}
+
+/**
+ * Builds the SQL statement that will delete the entity with the given id from the specified table.
+ *
+ * @param string $table_name Name of the table from which the entity will be deleted.
+ * @param string $id Id of the entity to delete from the table.
+ * @return string SQL statement that deletes the given entity
+ */
+function build_deletion_string($table_name, $id)
+{
+    return sprintf(
+        "DELETE 
+                FROM `%s` 
+                WHERE `%s`.`id` = %s",
+        $table_name,
+        $table_name,
+        $id
+    );
 }

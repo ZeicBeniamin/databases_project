@@ -1,6 +1,6 @@
 <?php
 
-require_once "utils/utils.php";
+require_once "utils.php";
 
 /**
  * Builds the string that will be used to update a specific SQL entity

@@ -1,6 +1,6 @@
 <?php
 
-require_once "utils/utils.php";
+require_once "utils.php";
 /**
  * Insert data in database, using on a given SQL query
  *
@@ -87,7 +87,7 @@ function print_insert_form($table_name)
             );
         } else {
             echo(sprintf(
-                "<td><input name='%s' type='%s' id='$s'></input></td>",
+                "<td><input name='%s' type='%s' id='%s'></input></td>",
                 $r['COLUMN_NAME'],
                 $input_type,
                 $r['COLUMN_NAME']

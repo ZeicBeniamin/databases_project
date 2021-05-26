@@ -165,8 +165,8 @@ function query_db($query_string)
         $result = mysqli_query($connection, "" . $query_string);
     } catch (mysqli_sql_exception $e) {
         echo "<p class='error'>Query failed</p>";
-        echo sprintf("<br>Query string: %s<br>", $query_string);
-        echo sprintf("<br>Error: %s<br>", $e->getMessage());
+        echo sprintf("<p class='sql_code'>Query string: <br>%s</p>", $query_string);
+        echo sprintf("<p class='error'>Error: %s</p>", $e->getMessage());
         return null;
     }
 

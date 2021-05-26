@@ -2,72 +2,72 @@
 session_start();
 if (isset($_POST['drivers/select'])) {
     $_SESSION['table'] = 'drivers';
-    header("Location: " . "select.php");
+    header("Location: " . "../sql_layer/select.php");
 } elseif (isset($_POST['schedule/select'])) {
     $_SESSION['table'] = 'schedule';
-    header("Location: " . "select.php");
+    header("Location: " . "../sql_layer/select.php");
 } elseif (isset($_POST['routes/select'])) {
     $_SESSION['table'] = 'routes';
-    header("Location: " . "select.php");
+    header("Location: " . "../sql_layer/select.php");
 } elseif (isset($_POST['stops/select'])) {
     $_SESSION['table'] = 'stops';
-    header("Location: " . "select.php");
+    header("Location: " . "../sql_layer/select.php");
 } elseif (isset($_POST['vehicles/select'])) {
     $_SESSION['table'] = 'vehicles';
-    header("Location: " . "select.php");
+    header("Location: " . "../sql_layer/select.php");
 }
 
 if (isset($_POST['drivers/insert'])) {
     $_SESSION['table'] = 'drivers';
-    header("Location: " . "insert.php");
+    header("Location: " . "../sql_layer/insert.php");
 } elseif (isset($_POST['schedule/insert'])) {
     $_SESSION['table'] = 'schedule';
-    header("Location: " . "insert.php");
+    header("Location: " . "../sql_layer/insert.php");
 } elseif (isset($_POST['routes/insert'])) {
     $_SESSION['table'] = 'routes';
-    header("Location: " . "insert.php");
+    header("Location: " . "../sql_layer/insert.php");
 } elseif (isset($_POST['stops/insert'])) {
     $_SESSION['table'] = 'stops';
-    header("Location: " . "insert.php");
+    header("Location: " . "../sql_layer/insert.php");
 } elseif (isset($_POST['vehicles/insert'])) {
     $_SESSION['table'] = 'vehicles';
-    header("Location: " . "insert.php");
+    header("Location: " . "../sql_layer/insert.php");
 }
 
 if (isset($_POST['drivers/update'])) {
     $_SESSION['table'] = 'drivers';
-    header("Location: " . "update.php");
+    header("Location: " . "../sql_layer/update.php");
 } elseif (isset($_POST['schedule/update'])) {
     $_SESSION['table'] = 'schedule';
-    header("Location: " . "update.php");
+    header("Location: " . "../sql_layer/update.php");
 } elseif (isset($_POST['routes/update'])) {
     $_SESSION['table'] = 'routes';
-    header("Location: " . "update.php");
+    header("Location: " . "../sql_layer/update.php");
 } elseif (isset($_POST['stops/update'])) {
     $_SESSION['table'] = 'stops';
-    header("Location: " . "update.php");
+    header("Location: " . "../sql_layer/update.php");
 } elseif (isset($_POST['vehicles/update'])) {
     $_SESSION['table'] = 'vehicles';
-    header("Location: " . "update.php");
+    header("Location: " . "../sql_layer/update.php");
 }
 
 $tables = array(['drivers', 'schedule', 'routes', 'stops', 'vehicles']);
 
 if (isset($_POST['drivers/delete'])) {
     $_SESSION['table'] = 'drivers';
-    header("Location: " . "delete.php");
+    header("Location: " . "../sql_layer/delete.php");
 } elseif (isset($_POST['schedule/delete'])) {
     $_SESSION['table'] = 'schedule';
-    header("Location: " . "delete.php");
+    header("Location: " . "../sql_layer/delete.php");
 } elseif (isset($_POST['routes/delete'])) {
     $_SESSION['table'] = 'routes';
-    header("Location: " . "delete.php");
+    header("Location: " . "../sql_layer/delete.php");
 } elseif (isset($_POST['stops/delete'])) {
     $_SESSION['table'] = 'stops';
-    header("Location: " . "delete.php");
+    header("Location: " . "../sql_layer/delete.php");
 } elseif (isset($_POST['vehicles/delete'])) {
     $_SESSION['table'] = 'vehicles';
-    header("Location: " . "delete.php");
+    header("Location: " . "../sql_layer/delete.php");
 }
 ?>
 

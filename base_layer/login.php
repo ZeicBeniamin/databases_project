@@ -8,7 +8,7 @@
 <body>
 
 <?php
-require_once "utils/utils.php";
+require_once "../utils/utils.php";
 
 if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])) {
     // Suppose inserted data is false - this prevents a database check when the
@@ -91,5 +91,6 @@ echo "<br>";
     // Load the signIn page, if the user clicks that button
     function loadSignInPage() {
         window.location = "signin.php";
+
     }
 </script>
