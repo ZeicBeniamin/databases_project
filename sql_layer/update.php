@@ -11,6 +11,7 @@
 <?php
 require "../utils/init.php";
 require "../utils/select_utils.php";
+require "../utils/update_utils.php";
 // Get the table name and show it on the webpage
 session_start();
 $table_name = $_SESSION['table'];
@@ -32,7 +33,16 @@ echo $webp_title . " - UPDATE";
         </colgroup>
         <?php
         print_select_table_header($table_name);
-        print_entities_checklist($table_name);
+        print_entities_checklistmodif($table_name);
+
+        /**
+         * TODO:
+         * Id trebuie să rămână cu auto-increment pentru toate tabelele
+         * Rid nu ne încurcă la SELECT.
+         * Rid ne încurcă (minor) la INSERT - rezolvat
+         * Rid ne încurcă (major), dar identic, la UPDATE și DELETE
+         */
+
         ?>
     </table>
     <button type="button" onclick="checkAndSubmit()">Modify</button>

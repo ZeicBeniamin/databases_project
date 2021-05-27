@@ -45,7 +45,7 @@ elseif (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERV
         <?php
         // Generate the table header using php
         print_table_header($table_name);
-        print_entity_content($table_name, $id);
+        print_entity_contentmodif($table_name, $id);
         ?>
     </table>
     <button type="submit">Update</button>

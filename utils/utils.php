@@ -233,7 +233,7 @@ function query_column_names($table_name)
     require "init.php";
 
     $q_table_columns = sprintf(
-        "SELECT *
+        "SELECT COLUMN_NAME, DATA_TYPE
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_NAME = '%s'
                 ORDER BY ORDINAL_POSITION", $table_name);
@@ -256,10 +256,12 @@ function is_data_non_empty($table_name)
 {
     $r_column_names = query_column_names($table_name);
     while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
-        if (empty($_POST[$r['COLUMN_NAME']])) {
+        if ($_POST[$r['COLUMN_NAME']] == null) {
+//            echo($r['COLUMN_NAME'] . " " . $_POST[$r['COLUMN_NAME']] . "<br>");
             return false;
         }
     }
+
     return true;
 }
 

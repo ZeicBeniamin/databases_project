@@ -30,29 +30,39 @@ function build_insertion_string($table_name)
 {
     $r_column_names = query_column_names($table_name);
 
-    $keys = "(`id`";
-    $values = "VALUES (NULL";
+    if ($table_name != 'routes') {
+        $keys = "(`id`";
+        $values = "VALUES (NULL";
+    } else {
+        $keys = "";
+        $values = "";
+    }
 
     while ($r = mysqli_fetch_array($r_column_names, MYSQLI_ASSOC)) {
-        if (!empty($_POST[$r['COLUMN_NAME']]) &&
-            $r['COLUMN_NAME'] != 'id') {
+        if ($r['COLUMN_NAME'] != 'id') {
             $keys = $keys . sprintf(", `%s`", $r['COLUMN_NAME']);
             $values = $values . sprintf(", '%s'", $_POST[$r['COLUMN_NAME']]);
-        } elseif (empty($_POST[$r['COLUMN_NAME']])) {
-            $isDataValid = false;
         }
 
     }
     // Close the parentheses of the keys and values strings
     $keys = $keys . ")";
     $values = $values . ")";
-
-    return sprintf(
-        "INSERT INTO `%s` %s %s",
-        $table_name,
-        $keys,
-        $values
-    );
+    if ($table_name != 'routes') {
+        return sprintf(
+            "INSERT INTO `%s` %s %s",
+            $table_name,
+            $keys,
+            $values
+        );
+    } else {
+        return sprintf(
+            "INSERT INTO `%s` ( %s VALUES ( %s",
+            $table_name,
+            ltrim($keys, ','),
+            ltrim($values, ',')
+        );
+    }
 }
 
 /**

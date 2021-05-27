@@ -69,6 +69,11 @@ if (isset($_POST['drivers/delete'])) {
     $_SESSION['table'] = 'vehicles';
     header("Location: " . "../sql_layer/delete.php");
 }
+
+if(isset($_POST['view/test_view'])) {
+    $_SESSION['table'] = 'test_view';
+    header("Location: " . "../sql_layer/select.php");
+}
 ?>
 
 
@@ -104,6 +109,12 @@ if (isset($_POST['drivers/delete'])) {
         <button name="vehicles/insert" target="middle_frame"> Insert</button>
         <button name="vehicles/update" target="middle_frame"> Update</button>
         <button name="vehicles/delete" target="middle_frame"> Delete</button>
+
+        <a name="#" class="active">Views</a>
+        <button name="view/test_view" target="middle_frame">test_view</button>
+<!--        <button name="vehicles/insert" target="middle_frame"> Insert</button>-->
+<!--        <button name="vehicles/update" target="middle_frame"> Update</button>-->
+<!--        <button name="vehicles/delete" target="middle_frame"> Delete</button>-->
     </form>
 
 </div>

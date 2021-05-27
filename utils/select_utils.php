@@ -37,10 +37,15 @@ function print_entities_checklist($table_name)
     $q_table_data = sprintf("SELECT * FROM %s", $table_name);
     $r_table_data = query_db($q_table_data);
     // Generate the table rows using php
+
     while ($r = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC)) {
         echo "<tr>";
         // Print a radio button in front of each row.
-        echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['id']));
+        if ($table_name != 'routes') {
+            echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['id']));
+        } else {
+            echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['rid']));
+        }
         // Make a new cell out of each data field in the currently processed row.
         foreach (array_keys($r) as $column_name) {
             echo(sprintf("<td> %s </td>", $r[$column_name]));
