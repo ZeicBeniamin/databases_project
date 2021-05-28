@@ -22,6 +22,8 @@ echo $webp_title . " - UPDATE";
 <form id="update_form" method="POST" action="update_i.php">
     <!-- Pass the table name as an argument to the PHP script. -->
     <input type="hidden" name="table_name" value="<?= $table_name; ?>"/>
+    <button type="button" onclick="checkAndSubmit()">Modify</button>
+
     <table border="1px">
         <colgroup>
 
@@ -33,7 +35,7 @@ echo $webp_title . " - UPDATE";
         </colgroup>
         <?php
         print_select_table_header($table_name);
-        print_entities_checklistmodif($table_name);
+        print_entities_checklist_robust($table_name);
 
         /**
          * TODO:

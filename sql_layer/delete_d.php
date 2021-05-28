@@ -13,17 +13,18 @@ require_once "../utils/utils.php";
 require_once "../utils/delete_utils.php";
 
 $table_name = $_POST['table_name'];
-$id = $_POST['id'];
+$row_id = $_POST['row_id'];
 $webp_title = ucfirst($table_name) . " table";
 echo $webp_title;
 echo " - DELETE";
-// Build the SQL statement that will delete the entity with the given id
-$q_data_delete = build_deletion_string($table_name, $id);
+
 // Delete data only if the user presses the button AND if an entity with the id displayed in the webpage exists
 if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['PHP_SELF'])
     && isset($_POST['btnDelete'])) {
-    // Check that the id of the element to delete was transmitted as a parameter through the POST method.
-    if ($id) {
+    // Build the SQL statement that will delete the entity with the given id
+    $q_data_delete = build_deletion_string_robust($table_name, $row_id);
+    // Check that t he id of the element to delete was transmitted as a parameter through the POST method.
+    if ($row_id == 0 || $row_id != null) {
         deleteData($q_data_delete);
     } else {
         // If we have no id transmitted, we will not send the SQL deletion statement.
@@ -33,6 +34,8 @@ if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['
 ?>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
     <input type="hidden" name="table_name" value="<?= $table_name; ?>"/>
+    <input type="hidden" name="row_id" value="<?= $row_id; ?>"/>
+
     <table>
         <colgroup>
 
@@ -44,7 +47,7 @@ if (isCalledFromThis($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'], $_SERVER['
         </colgroup>
         <?php
         print_table_header($table_name);
-        display_selected_entity($table_name, $id);
+        print_entity_content_robust($table_name, $row_id, true);
         ?>
     </table>
     <button name='btnDelete' type="submit">Delete</button>

@@ -7,7 +7,7 @@ require_once "utils.php";
  *
  * @param string $table_name Name of the table from which the entities will be taken
  */
-function print_entities($table_name)
+function print_all_rows($table_name)
 {
     // Get all the entities in the specifed table
     $q_table_data = sprintf("SELECT * FROM %s", $table_name);
@@ -24,35 +24,35 @@ function print_entities($table_name)
     }
 }
 
-
 /**
  * Prints all the entities stored in a given table, preceded by a radio button.
  *
  * The radio button will be used for selecting one of the entities for deletion.
  * @param string $table_name Name of the table from which the entities will be taken
  */
-function print_entities_checklist($table_name)
+function print_entities_checklist_robust($table_name)
 {
     // Get all the entities in the specified table
     $q_table_data = sprintf("SELECT * FROM %s", $table_name);
     $r_table_data = query_db($q_table_data);
-    // Generate the table rows using php
 
-    while ($r = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC)) {
+    // Generate the table rows using php
+    foreach ($r_table_data as $data_row_idx => $data_array) {
         echo "<tr>";
-        // Print a radio button in front of each row.
-        if ($table_name != 'routes') {
-            echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['id']));
-        } else {
-            echo(sprintf("<td> <input class='id_button' type='radio' name='id' value='%s'></td>", $r['rid']));
-        }
-        // Make a new cell out of each data field in the currently processed row.
-        foreach (array_keys($r) as $column_name) {
-            echo(sprintf("<td> %s </td>", $r[$column_name]));
+
+        echo(sprintf(
+            "<td> 
+            <input class='id_button' type='radio' name='row_id' 
+            value='%s'></td>",
+            $data_row_idx));
+
+        foreach ($data_array as $column => $value) {
+            echo(sprintf("<td> %s </td>", $value));
         }
         echo "</tr>";
     }
 }
+
 
 /**
  * Prints the elements of a table header, preceded by a "Select" header element.
@@ -71,7 +71,7 @@ function print_select_table_header($table_name)
     // Print a header cell for each of the columns. The header cell will also display the name of the column
     while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
         echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-        echo("<br>");
+//        echo("<br>");
     }
     echo "</tr>";
 }

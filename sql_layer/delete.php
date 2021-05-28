@@ -23,6 +23,7 @@ echo " - DELETE";
 <form id="delete_form" method="POST" action="delete_d.php">
     <!-- Pass the table name as an argument to the PHP script. -->
     <input type="hidden" name="table_name" value="<?= $table_name; ?>"/>
+    <button type="button" onclick="checkAndSubmit()">Delete</button>
     <table border="1px">
 
         <colgroup>
@@ -38,7 +39,7 @@ echo " - DELETE";
         // Print the table header.
         print_select_table_header($table_name);
         // Then print each entity of the table on one row.
-        print_entities_checklist($table_name);
+        print_entities_checklist_robust($table_name);
         ?>
     </table>
 

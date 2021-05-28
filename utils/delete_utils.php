@@ -3,48 +3,6 @@
 require_once "utils.php";
 
 /**
- * Display an entity specified by its id from a specific table, specified by its table name.
- *
- * The id of the entity and the table name should be passed as arguments to the function. The caller must be sure that
- * the id exists in the given table
- * @param string $table_name Name of the table that contains an entity with the given id
- * @param int $id Id of the entity
- */
-function display_selected_entity($table_name, $id)
-{
-    $r_table_columns = query_column_names($table_name);
-    $q_table_data = sprintf("SELECT * FROM %s WHERE `id` = %d", $table_name, $id);
-    $r_table_data = query_db($q_table_data);
-
-    $data = mysqli_fetch_array($r_table_data, MYSQLI_ASSOC);
-
-    while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
-        switch ($r['DATA_TYPE']) {
-            case 'int':
-                $input_type = 'number';
-                $width = '20px';
-                break;
-            case 'varchar':
-                $input_type = 'text';
-                $width = '40px';
-                break;
-            case 'date':
-                $input_type = 'date';
-                $width = '40px';
-                break;
-        }
-        // Create a cell for every data type contained by the entity
-        echo(sprintf(
-            "<td><input name='%s' type='%s' id='%s' value='%s' readonly></input></td>",
-            $r['COLUMN_NAME'],
-            $input_type,
-            $r['COLUMN_NAME'],
-            $data[$r['COLUMN_NAME']]
-        ));
-    }
-}
-
-/**
  * Execute the deletion string sent as a function parameter
  *
  * @param string $q_data_delete The SQL deletion statement to be executed
@@ -59,20 +17,58 @@ function deleteData($q_data_delete)
 }
 
 /**
- * Builds the SQL statement that will delete the entity with the given id from the specified table.
+ * Builds the SQL statement that will delete the entity with the given $row_id from the table given by $table_name
  *
  * @param string $table_name Name of the table from which the entity will be deleted.
- * @param string $id Id of the entity to delete from the table.
+ * @param string $row_index Absolute row id of the entity to be deleted
  * @return string SQL statement that deletes the given entity
  */
-function build_deletion_string($table_name, $id)
+function build_deletion_string_robust($table_name, $row_index)
 {
+    $r_table_columns = query_column_names($table_name);
+
+    $set_string = "";
+    $where_clause = "";
+    $k = -1;
+
+    // Take every row in the table that contains the column names and data types
+    foreach ($r_table_columns as $col_row_idx => $col_array) {
+        $k++;
+        // Take every cell of the table
+        $column_name = $col_array['COLUMN_NAME'];
+//                DEBUG only
+//                echo "Col name " . $column_name . "<br>";
+//                echo "Col type " . $column_type . "<br>";
+//                echo "Col value " . $column_value . "<br>";
+
+        if ($k != 0) {
+            $where_clause .= 'AND';
+        }
+//        if ($row_id == 0 || $row_id != null) {
+        // If the field is non-empty or zero
+        if ($_POST[$column_name] == 0 || $_POST[$column_name] != null) {
+            $where_clause .=
+                sprintf(" `%s`.`%s` = '%s' ",
+                    $table_name,
+                    $column_name,
+                    $_POST[$column_name]
+                );
+        } else {
+            $where_clause .=
+                sprintf(" `%s`.`%s` IS NULL ",
+                    $table_name,
+                    $column_name
+                );
+        }
+
+
+    }
+
     return sprintf(
-        "DELETE 
-                FROM `%s` 
-                WHERE `%s`.`id` = %s",
+        "DELETE
+                FROM `%s`
+                WHERE %s",
         $table_name,
-        $table_name,
-        $id
+        $where_clause
     );
 }

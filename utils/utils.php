@@ -278,8 +278,55 @@ function print_table_header($table_name)
 
     while ($r = mysqli_fetch_array($r_table_columns, MYSQLI_ASSOC)) {
         echo(sprintf("<th><b>%s</b></th>", ucfirst($r['COLUMN_NAME'])));
-        echo("<br>");
     }
     echo "</tr>";
 
+}
+
+/**
+ * Prints an HTML table row, with one cell corresponding to each of the columns of the table given as $table_name
+ *
+ * @param string $table_name Name of the table that the entity belongs to
+ * @param int $row_index Absolute index of the database entity to be printed
+ */
+function print_entity_content_robust($table_name, $row_index, $readonly)
+{
+
+    $q_table_data = sprintf("SELECT * FROM %s", $table_name);
+    $r_table_data = query_db($q_table_data);
+    // Generate the table rows using php
+    $r_table_columns = query_column_names($table_name);
+
+    echo "<tr>";
+    foreach ($r_table_data as $data_row_idx => $data_array) {
+        $col_name = null;
+        $data_type = null;
+        $cell_value = null;
+        // Search for the element that has the same absolute row id as that received as a parameter
+        if ($data_row_idx == $row_index) {
+            // Cycle through all the columns of the table and generate a cell for each of the columns. Consider the
+            // datatype of that cell too.
+            foreach ($r_table_columns as $col_row_idx => $col_array) {
+                $col_name = $col_array['COLUMN_NAME'];
+                $cell_value = $data_array[$col_name];
+                $data_type = $col_array['DATA_TYPE'];
+
+                if ($col_name == 'id') {
+                    echo(
+                    sprintf("<td><input name='id' type='text' value='%s' readonly></input></td>", $cell_value));
+                } else {
+                    echo(sprintf(
+                        "<td><input name='%s' type='%s' id='%s' value='%s' %s></input></td>",
+                        $col_name,
+                        $data_type,
+                        $col_name,
+                        $cell_value,
+                        // Add a readonly tag if the $readonly parameter is set to true
+                        ($readonly ? "readonly" : "")
+                    ));
+                }
+            }
+        }
+    }
+    echo "</tr>";
 }

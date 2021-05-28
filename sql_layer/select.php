@@ -26,7 +26,7 @@ echo $webp_title . " - SELECT";
     </colgroup>
     <?php
     print_table_header($table_name);
-    print_entities($table_name);
+    print_all_rows($table_name);
     ?>
 </table>
 

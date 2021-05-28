@@ -14,6 +14,8 @@ function insertData($q_data_insert)
         echo "<br> Insertion completed successfully.";
         echo "<p class='sql_code'> Insert statement:";
         echo "<br>" . $q_data_insert . "</p>";
+    } else {
+        return null;
     }
 }
 
@@ -91,16 +93,18 @@ function print_insert_form($table_name)
                 break;
         }
 
+        // Print the input form. Retain the previous input, if any
         if ($r['COLUMN_NAME'] == 'id') {
             echo(
             "<td><input name='id' type='text' value='Autoincrement' readonly></input></td>"
             );
         } else {
             echo(sprintf(
-                "<td><input name='%s' type='%s' id='%s'></input></td>",
+                "<td><input name='%s' type='%s' id='%s' value='%s'></input></td>",
                 $r['COLUMN_NAME'],
                 $input_type,
-                $r['COLUMN_NAME']
+                $r['COLUMN_NAME'],
+                $_POST[$r['COLUMN_NAME']]
             ));
         }
     }
